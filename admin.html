@@ -1,0 +1,422 @@
+<!DOCTYPE html>
+<html lang="tg">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Панели Админ — Imkon Tower</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet"/>
+<link rel="stylesheet" href="style.css"/>
+</head>
+<body data-theme="dark">
+
+<!-- LOGIN -->
+<div class="admin-login" id="adminLogin">
+  <div class="login-box">
+    <div class="logo-icon" style="width:48px;height:48px;margin:0 auto 16px;">
+      <svg viewBox="0 0 26 26" fill="none" width="28" height="28">
+        <rect x="2" y="14" width="5" height="10" fill="#0A1628"/>
+        <rect x="10.5" y="8" width="5" height="16" fill="#0A1628"/>
+        <rect x="19" y="11" width="5" height="13" fill="#0A1628"/>
+        <polygon points="13,2 13,6 9,10 17,10" fill="#0A1628"/>
+      </svg>
+    </div>
+    <h2>Панели Админ</h2>
+    <p>Вориди ҳисоби худ шав</p>
+    <div class="form-row"><label>Email</label><input type="email" id="loginUser" placeholder="admin@imkontower.tj"/></div>
+    <div class="form-row"><label>Парол</label><input type="password" id="loginPass" placeholder="••••••" onkeydown="if(event.key==='Enter')doLogin()"/></div>
+    <button class="form-btn" onclick="doLogin()">Воридшавӣ</button>
+    <p id="loginError" style="margin-top:12px;font-size:0.78rem;color:#E88080;"></p>
+    <p style="margin-top:12px;font-size:0.71rem;color:var(--text-dim);">
+      Корбари админро дар Firebase Console → Authentication → Users илова кунед.
+    </p>
+    <a href="index.html" style="display:inline-block;margin-top:14px;font-size:0.78rem;color:var(--gold);">← Бозгашт ба сайт</a>
+  </div>
+</div>
+
+<!-- DASHBOARD -->
+<div id="adminDash" style="display:none;">
+  <div class="admin-nav">
+    <div class="logo">
+      <div class="logo-icon" style="width:34px;height:34px;">
+        <svg viewBox="0 0 26 26" fill="none" width="20" height="20">
+          <rect x="2" y="14" width="5" height="10" fill="#0A1628"/>
+          <rect x="10.5" y="8" width="5" height="16" fill="#0A1628"/>
+          <rect x="19" y="11" width="5" height="13" fill="#0A1628"/>
+          <polygon points="13,2 13,6 9,10 17,10" fill="#0A1628"/>
+        </svg>
+      </div>
+      <span class="logo-text" style="font-size:0.95rem;">IMKON <span>TOWER</span> — Админ</span>
+    </div>
+    <div style="display:flex;gap:8px;">
+      <a href="index.html" class="btn-outline">← Ба сайт</a>
+      <button class="btn-gold" onclick="showAdminPage('addProperty')">+ Хона иловакун</button>
+      <button class="btn-outline" onclick="doLogout()">Баромад</button>
+    </div>
+  </div>
+  <div class="admin-body">
+    <div class="admin-sidebar">
+      <ul>
+        <li><a class="active" onclick="showAdminPage('dashboard',this)">📊 Dashboard</a></li>
+        <li><a onclick="showAdminPage('properties',this)">🏠 Хонаҳо</a></li>
+        <li><a onclick="showAdminPage('addProperty',this)">➕ Хона иловакун</a></li>
+        <li><a onclick="showAdminPage('settings',this)">⚙️ Танзимот</a></li>
+      </ul>
+    </div>
+    <div class="admin-main">
+
+      <!-- DASHBOARD -->
+      <div class="admin-page active" id="page-dashboard">
+        <div class="admin-page-title">Dashboard</div>
+        <div class="admin-stats">
+          <div class="admin-stat-card"><div class="label">Ҳамаи объектҳо</div><div class="value" id="statTotal">0</div></div>
+          <div class="admin-stat-card"><div class="label">Барои фурӯш</div><div class="value" id="statSell">0</div></div>
+          <div class="admin-stat-card"><div class="label">Барои иҷора</div><div class="value" id="statRent">0</div></div>
+          <div class="admin-stat-card"><div class="label">VIP объектҳо</div><div class="value" id="statVip">0</div></div>
+        </div>
+        <div class="admin-table-wrap">
+          <div class="admin-table-header"><h4>Охирин объектҳо</h4></div>
+          <table><thead><tr><th>Ном</th><th>Намуд</th><th>Нарх</th><th>Дидан</th></tr></thead>
+          <tbody id="dashTableBody"></tbody></table>
+        </div>
+      </div>
+
+      <!-- PROPERTIES LIST -->
+      <div class="admin-page" id="page-properties">
+        <div class="admin-page-title">Ҳамаи хонаҳо</div>
+        <div class="admin-table-wrap">
+          <div class="admin-table-header">
+            <h4>Рӯйхати объектҳо</h4>
+            <button class="btn-gold" style="font-size:0.76rem;padding:6px 13px;" onclick="showAdminPage('addProperty')">+ Иловакун</button>
+          </div>
+          <table><thead><tr><th>#</th><th>Медиа</th><th>Ном</th><th>Ноҳия</th><th>Намуд</th><th>Нарх</th><th>VIP</th><th>Дидан</th><th>Амал</th></tr></thead>
+          <tbody id="propertiesTableBody"></tbody></table>
+        </div>
+      </div>
+
+      <!-- ADD/EDIT PROPERTY -->
+      <div class="admin-page" id="page-addProperty">
+        <div class="admin-page-title" id="addPropTitle">Хонаи нав иловакун</div>
+        <div class="add-form">
+          <h4>Маълумоти асосӣ</h4>
+          <input type="hidden" id="ap-editId" value=""/>
+          <div class="form-grid">
+            <div class="form-row"><label>Номи эълон</label><input type="text" id="ap-name" placeholder="масалан: Квартираи 3-хона, Сино"/></div>
+            <div class="form-row"><label>Намуди эълон</label>
+              <select id="ap-type"><option value="sell">Фурӯш</option><option value="rent">Иҷора</option></select>
+            </div>
+            <div class="form-row"><label>Ноҳия</label><input type="text" id="ap-district" placeholder="Ноҳияи Сино"/></div>
+            <div class="form-row"><label>Суроға</label><input type="text" id="ap-address" placeholder="Кӯчаи Рӯдакӣ 25"/></div>
+            <div class="form-row"><label>Нарх (сомонӣ)</label><input type="number" id="ap-price" placeholder="350000"/></div>
+            <div class="form-row"><label>Намуди манзил</label>
+              <select id="ap-kind"><option>Квартира</option><option>Хонаи алоҳида</option><option>Коттедж</option><option>Офис</option><option>Студия</option></select>
+            </div>
+            <div class="form-row"><label>Ошёна (масалан 3/9)</label><input type="text" id="ap-floor" placeholder="3/9"/></div>
+            <div class="form-row"><label>Майдон (м²)</label><input type="number" id="ap-area" placeholder="75"/></div>
+            <div class="form-row"><label>Шумораи хонаҳо</label><input type="number" id="ap-rooms" placeholder="3"/></div>
+            <div class="form-row"><label>Вазъи таъмир</label>
+              <select id="ap-status"><option value="new">Нав / Аврупоӣ</option><option value="good">Таъмири хуб</option><option value="repair">Таъмир лозим</option></select>
+            </div>
+          </div>
+          <div class="form-row" style="margin-top:6px;"><label>Тавсифи муфассал</label><textarea id="ap-desc" placeholder="Объектро муфассал тавсиф кун..."></textarea></div>
+
+          <div class="checkbox-row">
+            <input type="checkbox" id="ap-vip"/>
+            <label for="ap-vip">⭐ Ин хонаро ҳамчун VIP / Пешниҳоди махсус нишон деҳ</label>
+          </div>
+
+          <h4 style="margin-top:22px;">📍 Координата (барои харита)</h4>
+          <p style="font-size:0.8rem;color:var(--text-dim);margin-bottom:8px;">Дар харита клик кун ё координатаро дастӣ ворид кун.</p>
+          <div id="miniMap"></div>
+          <div class="coord-inputs">
+            <div class="form-row"><label>Latitude</label><input type="number" id="ap-lat" step="0.000001" placeholder="38.5598" oninput="onCoordManualInput()"/></div>
+            <div class="form-row"><label>Longitude</label><input type="number" id="ap-lng" step="0.000001" placeholder="68.7870" oninput="onCoordManualInput()"/></div>
+          </div>
+
+          <h4 style="margin-top:22px;">Сурат ва видеоҳо</h4>
+          <div class="form-row">
+            <div class="media-upload-area" id="uploadArea">
+              <input type="file" id="ap-media" accept="image/*,video/*" multiple onchange="handleMediaUpload(this)"/>
+              <div class="upload-icon">📷</div>
+              <p>Сурат ё видеоро ин ҷо кашида биёр ё клик кун</p>
+              <small>JPG, PNG, MP4, MOV — якчанд файл (Cloudinary-га бор мешаванд)</small>
+            </div>
+            <div class="media-preview-grid" id="mediaPreviewGrid"></div>
+          </div>
+
+          <div style="display:flex;gap:10px;margin-top:16px;">
+            <button class="form-btn" style="max-width:260px;" id="ap-submit-btn" onclick="submitProperty()">✅ Илова кун ва нашр кун</button>
+            <button class="btn-outline" id="ap-cancel-btn" style="display:none;" onclick="cancelEdit()">Бекор кун</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- SETTINGS -->
+      <div class="admin-page" id="page-settings">
+        <div class="admin-page-title">Танзимот</div>
+        <div class="add-form" style="max-width:460px;">
+          <h4>Иваз кардани парол</h4>
+          <p style="font-size:0.8rem;color:var(--text-dim);margin-bottom:14px;">Барои бехатарии беҳтар, паролро бо роҳи "forgot password" аз Firebase Auth низ иваз карда мешавад.</p>
+          <div class="form-row"><label>Парол нав</label><input type="password" id="newPassInput" placeholder="••••••"/></div>
+          <button class="form-btn" style="max-width:220px;" onclick="changeAdminPassword()">Сабт кун</button>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<div id="toast"></div>
+
+<!-- ═══ FIREBASE SDK ═══ -->
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-storage-compat.js"></script>
+<script src="firebase-config.js"></script>
+<script src="map.js"></script>
+<script src="app.js"></script>
+<script>
+let pendingMedia = [];   // {file, type, url(local preview)}
+let editingId = null;
+let _pickedLat = null, _pickedLng = null;
+
+// ── AUTH ──
+auth.onAuthStateChanged(user=>{
+  if(user){
+    document.getElementById('adminLogin').style.display='none';
+    document.getElementById('adminDash').style.display='block';
+    document.body.style.overflow='';
+    listenProperties(()=>{
+      refreshAdminStats(); renderPropertiesTable(); renderDashTable();
+    });
+  } else {
+    document.getElementById('adminLogin').style.display='flex';
+    document.getElementById('adminDash').style.display='none';
+  }
+});
+function doLogin(){
+  const email=v('loginUser'), pass=v('loginPass');
+  document.getElementById('loginError').textContent='';
+  if(!email||!pass){ document.getElementById('loginError').textContent='Email ва паролро пур кунед.'; return; }
+  auth.signInWithEmailAndPassword(email,pass).catch(err=>{
+    document.getElementById('loginError').textContent = 'Хатогӣ: email ё парол нодуруст аст.';
+    console.error(err);
+  });
+}
+function doLogout(){ auth.signOut(); }
+function changeAdminPassword(){
+  const newPass = v('newPassInput');
+  if(!newPass || newPass.length<6){ showToast('Парол бояд ҳадди ақал 6 рамз бошад'); return; }
+  auth.currentUser.updatePassword(newPass).then(()=>{
+    showToast('Парол тағйир ёфт ✓');
+    document.getElementById('newPassInput').value='';
+  }).catch(err=>{
+    showToast('Хатогӣ: '+err.message);
+  });
+}
+
+// ── ADMIN NAVIGATION ──
+function showAdminPage(page,link){
+  document.querySelectorAll('.admin-page').forEach(p=>p.classList.remove('active'));
+  document.getElementById('page-'+page).classList.add('active');
+  document.querySelectorAll('.admin-sidebar a').forEach(a=>a.classList.remove('active'));
+  if(link) link.classList.add('active');
+  else {
+    document.querySelectorAll('.admin-sidebar a').forEach(a=>{
+      if(a.textContent.includes('Хона иловакун') && page==='addProperty') a.classList.add('active');
+      if(a.textContent.includes('Хонаҳо') && page==='properties' && !a.textContent.includes('иловакун')) a.classList.add('active');
+    });
+  }
+  if(page==='addProperty'){
+    setTimeout(()=>initAdminMiniMap(onMapPick, _pickedLat, _pickedLng), 100);
+  }
+}
+
+// ── STATS / TABLES ──
+function refreshAdminStats(){
+  document.getElementById('statTotal').textContent = properties.length;
+  document.getElementById('statSell').textContent = properties.filter(p=>p.type==='sell').length;
+  document.getElementById('statRent').textContent = properties.filter(p=>p.type==='rent').length;
+  document.getElementById('statVip').textContent = properties.filter(p=>p.vip).length;
+}
+function renderPropertiesTable(){
+  document.getElementById('propertiesTableBody').innerHTML = properties.map((p,i)=>`
+    <tr>
+      <td>${i+1}</td>
+      <td>${p.media&&p.media.length>0
+        ?(p.media[0].type==='video'
+          ?`<video src="${p.media[0].url}" style="width:48px;height:34px;object-fit:cover;border-radius:3px;" muted></video>`
+          :`<img src="${p.media[0].url}" style="width:48px;height:34px;object-fit:cover;border-radius:3px;"/>`)
+        :`<span style="font-size:1.3rem;">${p.emoji||'🏠'}</span>`}
+        <small style="color:var(--text-dim);font-size:0.68rem;display:block;">${(p.media||[]).length} файл</small>
+      </td>
+      <td>${escapeHtml(p.name)}</td>
+      <td style="font-size:0.78rem;">${escapeHtml(p.district)}</td>
+      <td><span class="badge-status ${p.type==='sell'?'s-sell':'s-rent'}">${p.type==='sell'?'Фурӯш':'Иҷора'}</span></td>
+      <td>${formatPrice(p.price,p.type)}</td>
+      <td>${p.vip?'<span class="badge-status s-vip">⭐ VIP</span>':'—'}</td>
+      <td>👁 ${p.views||0}</td>
+      <td><div class="action-btns">
+        <button class="btn-edit" onclick="startEdit('${p.id}')">✎ Тағйир</button>
+        <button class="btn-del" onclick="deleteProperty('${p.id}')">🗑 Нест</button>
+      </div></td>
+    </tr>`).join('');
+}
+function renderDashTable(){
+  document.getElementById('dashTableBody').innerHTML = properties.slice(0,6).map(p=>`
+    <tr>
+      <td>${p.emoji||'🏠'} ${escapeHtml(p.name)}</td>
+      <td><span class="badge-status ${p.type==='sell'?'s-sell':'s-rent'}">${p.type==='sell'?'Фурӯш':'Иҷора'}</span></td>
+      <td>${formatPrice(p.price,p.type)}</td>
+      <td>👁 ${p.views||0}</td>
+    </tr>`).join('');
+}
+
+// ── DELETE ──
+function deleteProperty(id){
+  if(!confirm('Боварӣ доред, ки мехоҳед ин объектро нест кунед?')) return;
+  db.collection('properties').doc(id).delete().then(()=>{
+    showToast('Объект нест карда шуд ✓');
+  }).catch(err=>showToast('Хатогӣ: '+err.message));
+}
+
+// ── EDIT ──
+function startEdit(id){
+  const p = properties.find(x=>x.id===id);
+  if(!p) return;
+  editingId = id;
+  document.getElementById('addPropTitle').textContent = 'Тағйири объект: '+p.name;
+  document.getElementById('ap-editId').value = id;
+  document.getElementById('ap-name').value = p.name||'';
+  document.getElementById('ap-type').value = p.type||'sell';
+  document.getElementById('ap-district').value = p.district||'';
+  document.getElementById('ap-address').value = p.address||'';
+  document.getElementById('ap-price').value = p.price||'';
+  document.getElementById('ap-kind').value = p.kind||'Квартира';
+  document.getElementById('ap-floor').value = p.floor||'';
+  document.getElementById('ap-area').value = p.area||'';
+  document.getElementById('ap-rooms').value = p.rooms||'';
+  document.getElementById('ap-status').value = p.status||'new';
+  document.getElementById('ap-desc').value = p.desc||'';
+  document.getElementById('ap-vip').checked = !!p.vip;
+  _pickedLat = p.lat||null; _pickedLng = p.lng||null;
+  document.getElementById('ap-lat').value = p.lat||'';
+  document.getElementById('ap-lng').value = p.lng||'';
+  pendingMedia = (p.media||[]).map(m=>({...m, existing:true}));
+  renderMediaPreview();
+  document.getElementById('ap-submit-btn').textContent = '💾 Захира кардани тағйирот';
+  document.getElementById('ap-cancel-btn').style.display='inline-block';
+  showAdminPage('addProperty');
+}
+function cancelEdit(){
+  editingId=null;
+  clearAddForm();
+  document.getElementById('addPropTitle').textContent='Хонаи нав иловакун';
+  document.getElementById('ap-submit-btn').textContent='✅ Илова кун ва нашр кун';
+  document.getElementById('ap-cancel-btn').style.display='none';
+  showAdminPage('properties');
+}
+function clearAddForm(){
+  ['ap-name','ap-district','ap-address','ap-price','ap-floor','ap-area','ap-rooms','ap-desc','ap-lat','ap-lng'].forEach(id=>{document.getElementById(id).value='';});
+  document.getElementById('ap-vip').checked=false;
+  document.getElementById('ap-media').value='';
+  pendingMedia=[]; _pickedLat=null; _pickedLng=null;
+  renderMediaPreview();
+}
+
+// ── MAP PICK ──
+function onMapPick(lat,lng){
+  _pickedLat=lat; _pickedLng=lng;
+  document.getElementById('ap-lat').value = lat.toFixed(6);
+  document.getElementById('ap-lng').value = lng.toFixed(6);
+}
+function onCoordManualInput(){
+  _pickedLat = parseFloat(v('ap-lat'))||null;
+  _pickedLng = parseFloat(v('ap-lng'))||null;
+}
+
+// ── MEDIA UPLOAD (preview locally, actually uploaded on submit) ──
+function handleMediaUpload(input){
+  Array.from(input.files).forEach(file=>{
+    const url = URL.createObjectURL(file);
+    const type = file.type.startsWith('video') ? 'video' : 'image';
+    pendingMedia.push({ url, type, file });
+  });
+  renderMediaPreview();
+}
+function renderMediaPreview(){
+  document.getElementById('mediaPreviewGrid').innerHTML = pendingMedia.map((m,i)=>`
+    <div class="media-thumb">
+      ${m.type==='video'?`<video src="${m.url}" muted></video>`:`<img src="${m.url}"/>`}
+      <button class="remove-media" onclick="removeMed(${i})">×</button>
+    </div>`).join('');
+}
+function removeMed(i){ pendingMedia.splice(i,1); renderMediaPreview(); }
+
+// ── UPLOAD TO CLOUDINARY ──
+const CLOUDINARY_CLOUD = 'dstcdluhm';
+const CLOUDINARY_PRESET = 'imkon_upload';
+
+async function uploadPendingMedia(){
+  const uploaded = [];
+  for(const m of pendingMedia){
+    if(m.existing){ uploaded.push({url:m.url, type:m.type}); continue; }
+    const formData = new FormData();
+    formData.append('file', m.file);
+    formData.append('upload_preset', CLOUDINARY_PRESET);
+    formData.append('folder', 'imkon_tower');
+    const resourceType = m.type === 'video' ? 'video' : 'image';
+    const res = await fetch(
+      `https://api.cloudinary.com/v1_1/${CLOUDINARY_CLOUD}/${resourceType}/upload`,
+      { method: 'POST', body: formData }
+    );
+    if(!res.ok) throw new Error('Cloudinary upload failed');
+    const data = await res.json();
+    uploaded.push({ url: data.secure_url, type: m.type });
+  }
+  return uploaded;
+}
+
+// ── ADD / SAVE PROPERTY ──
+async function submitProperty(){
+  const name=v('ap-name'), type=v('ap-type'), district=v('ap-district'), address=v('ap-address');
+  const price=parseFloat(v('ap-price'))||0, kind=v('ap-kind'), floor=v('ap-floor');
+  const area=parseFloat(v('ap-area'))||0, rooms=parseInt(v('ap-rooms'))||1, status=v('ap-status');
+  const desc=v('ap-desc'), vip=document.getElementById('ap-vip').checked;
+  const lat=_pickedLat, lng=_pickedLng;
+
+  if(!name||!district||!price){ showToast('Ном, ноҳия ва нархро ворид кун!'); return; }
+
+  const btn=document.getElementById('ap-submit-btn');
+  btn.disabled=true; btn.textContent='⏳ Бор шудан истодааст...';
+
+  try{
+    const media = await uploadPendingMedia();
+    const data = {
+      name,type,kind,district,address,price,floor,area,rooms,status,
+      emoji: emojiFor(kind), desc, vip, media,
+      lat: lat||null, lng: lng||null
+    };
+
+    if(editingId){
+      await db.collection('properties').doc(editingId).update(data);
+      showToast('✅ Объект бомуваффақият тағйир дода шуд!');
+    } else {
+      data.views = 0;
+      data.createdAt = firebase.firestore.FieldValue.serverTimestamp();
+      await db.collection('properties').add(data);
+      showToast('✅ Хонаи нав иловашуд ва нашр гардид!');
+    }
+
+    cancelEdit();
+  } catch(err){
+    console.error(err);
+    showToast('Хатогӣ: '+err.message);
+  } finally {
+    btn.disabled=false;
+    btn.textContent = editingId ? '💾 Захира кардани тағйирот' : '✅ Илова кун ва нашр кун';
+  }
+}
+</script>
+</body>
+</html>

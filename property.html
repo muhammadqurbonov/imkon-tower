@@ -1,0 +1,229 @@
+<!DOCTYPE html>
+<html lang="tg">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Маълумоти хона — Imkon Tower</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet"/>
+<link rel="stylesheet" href="style.css"/>
+</head>
+<body>
+
+<div class="page-loader" id="pageLoader"><div class="spinner"></div><p>Бор шудан истодааст...</p></div>
+
+<!-- NAV -->
+<nav>
+  <a href="index.html" class="logo">
+    <div class="logo-icon">
+      <svg viewBox="0 0 26 26" fill="none" width="24" height="24">
+        <rect x="2" y="14" width="5" height="10" fill="#0A1628"/>
+        <rect x="10.5" y="8" width="5" height="16" fill="#0A1628"/>
+        <rect x="19" y="11" width="5" height="13" fill="#0A1628"/>
+        <polygon points="13,2 13,6 9,10 17,10" fill="#0A1628"/>
+      </svg>
+    </div>
+    <span class="logo-text">IMKON <span>TOWER</span></span>
+  </a>
+  <ul>
+    <li><a href="index.html#listings">Фурӯш</a></li>
+    <li><a href="index.html#listings">Иҷора</a></li>
+    <li><a href="index.html#mortgage">Ипотека</a></li>
+    <li><a href="index.html#contactSection">Тамос</a></li>
+  </ul>
+  <div class="nav-actions">
+    <button class="theme-btn" onclick="toggleTheme()" title="Режими рӯзона/шабона" id="themeBtn">🌙</button>
+    <a href="admin.html" class="btn-gold">Админ</a>
+  </div>
+</nav>
+
+<div class="detail-wrap" style="padding:20px 5% 60px;">
+  <a href="index.html#listings" class="back-link">← Бозгашт ба рӯйхат</a>
+
+  <div id="notFoundBox" style="display:none;text-align:center;padding:80px 0;">
+    <p style="font-size:1.1rem;color:var(--text-dim);">Объект ёфт нашуд ё нест карда шудааст.</p>
+    <a href="index.html" class="btn-gold" style="margin-top:16px;display:inline-block;">Ба саҳифаи асосӣ</a>
+  </div>
+
+  <div id="detailContent" style="display:none;">
+    <div class="detail-grid">
+      <!-- GALLERY -->
+      <div>
+        <div class="gallery">
+          <div class="gallery-track" id="galleryTrack"></div>
+          <button class="gallery-arrow prev" onclick="galleryPrev()">‹</button>
+          <button class="gallery-arrow next" onclick="galleryNext()">›</button>
+          <span class="gallery-count" id="galleryCount"></span>
+          <div class="gallery-dots" id="galleryDots"></div>
+        </div>
+        <div class="thumbs-row" id="thumbsRow"></div>
+      </div>
+
+      <!-- INFO -->
+      <div class="detail-info">
+        <div class="detail-badges" id="detailBadges"></div>
+        <h1 class="detail-title" id="dTitle"></h1>
+        <div class="detail-location" id="dLocation"></div>
+        <div class="detail-price" id="dPrice"></div>
+        <div class="detail-specs-grid" id="dSpecs"></div>
+        <div class="detail-desc" id="dDesc"></div>
+        <div class="detail-contact-btns">
+          <a id="dWA" href="#" target="_blank" class="send-wa">💬 WhatsApp</a>
+          <a id="dTG" href="#" target="_blank" class="send-tg">✈️ Telegram</a>
+        </div>
+        <a href="index.html#mortgage" class="prop-mort-link" style="display:block;">📊 Ҳисоби ипотека барои ин хона</a>
+      </div>
+    </div>
+
+    <!-- MAP -->
+    <div class="detail-map-section" id="mapSection" style="display:none;">
+      <h3>📍 Ҷойгиршавӣ дар харита</h3>
+      <div id="detailMap"></div>
+    </div>
+
+    <!-- SIMILAR -->
+    <div class="similar-section">
+      <h3>Объектҳои монанд</h3>
+      <div class="listings-grid" id="similarGrid"></div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══ FIREBASE SDK ═══ -->
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-storage-compat.js"></script>
+<script src="firebase-config.js"></script>
+<script src="map.js"></script>
+<script src="common.js"></script>
+<script src="app.js"></script>
+<script>
+let _galleryMedia = [];
+let _galleryIdx = 0;
+
+function getParam(name){
+  return new URLSearchParams(window.location.search).get(name);
+}
+
+function renderGallery(media){
+  _galleryMedia = media && media.length ? media : [];
+  const track = document.getElementById('galleryTrack');
+  const dots = document.getElementById('galleryDots');
+  const count = document.getElementById('galleryCount');
+
+  if(!_galleryMedia.length){
+    track.innerHTML = `<div class="gallery-slide"><div class="gallery-placeholder">🏠</div></div>`;
+    dots.innerHTML=''; count.textContent='';
+    document.querySelector('.gallery-arrow.prev').style.display='none';
+    document.querySelector('.gallery-arrow.next').style.display='none';
+    document.getElementById('thumbsRow').innerHTML='';
+    return;
+  }
+
+  track.innerHTML = _galleryMedia.map(m=>`
+    <div class="gallery-slide">
+      ${m.type==='video'
+        ? `<video src="${m.url}" controls playsinline></video>`
+        : `<img src="${m.url}" alt=""/>`}
+    </div>`).join('');
+
+  dots.innerHTML = _galleryMedia.map((_,i)=>`<span class="gallery-dot ${i===0?'active':''}" onclick="goToSlide(${i})"></span>`).join('');
+  count.textContent = `1 / ${_galleryMedia.length}`;
+
+  const showArrows = _galleryMedia.length>1;
+  document.querySelector('.gallery-arrow.prev').style.display = showArrows?'flex':'none';
+  document.querySelector('.gallery-arrow.next').style.display = showArrows?'flex':'none';
+
+  document.getElementById('thumbsRow').innerHTML = _galleryMedia.map((m,i)=>`
+    <div class="thumb ${i===0?'active':''}" onclick="goToSlide(${i})">
+      ${m.type==='video' ? `<video src="${m.url}" muted></video>` : `<img src="${m.url}"/>`}
+    </div>`).join('');
+
+  track.addEventListener('scroll', ()=>{
+    const idx = Math.round(track.scrollLeft / track.clientWidth);
+    if(idx !== _galleryIdx) setActiveSlide(idx);
+  }, {passive:true});
+
+  _galleryIdx = 0;
+}
+function setActiveSlide(i){
+  _galleryIdx = i;
+  document.querySelectorAll('.gallery-dot').forEach((d,idx)=>d.classList.toggle('active', idx===i));
+  document.querySelectorAll('.thumb').forEach((t,idx)=>t.classList.toggle('active', idx===i));
+  const count=document.getElementById('galleryCount');
+  if(count) count.textContent = `${i+1} / ${_galleryMedia.length}`;
+}
+function goToSlide(i){
+  const track=document.getElementById('galleryTrack');
+  track.scrollTo({left: i*track.clientWidth, behavior:'smooth'});
+  setActiveSlide(i);
+}
+function galleryPrev(){ goToSlide(Math.max(0,_galleryIdx-1)); }
+function galleryNext(){ goToSlide(Math.min(_galleryMedia.length-1,_galleryIdx+1)); }
+window.addEventListener('resize', ()=>{ if(_galleryMedia.length) goToSlide(_galleryIdx); });
+
+function renderDetail(p){
+  document.title = p.name + ' — Imkon Tower';
+  renderGallery(p.media);
+
+  const badges = [];
+  if(p.vip) badges.push(`<span class="badge-vip" style="position:static;">⭐ VIP</span>`);
+  badges.push(`<span class="card-badge ${p.type==='rent'?'badge-rent':''}" style="position:static;">${p.type==='sell'?'Фурӯш':'Иҷора'}</span>`);
+  document.getElementById('detailBadges').innerHTML = badges.join('');
+
+  document.getElementById('dTitle').textContent = p.name;
+  document.getElementById('dLocation').textContent = '📍 '+p.district+(p.address?', '+p.address:'');
+  document.getElementById('dPrice').innerHTML = formatPrice(p.price,p.type)+`<small> ${p.type==='rent'?'дар моҳ':'нарх'}</small>`;
+
+  document.getElementById('dSpecs').innerHTML = `
+    <div class="detail-spec-item"><small>Намуд</small><span>${p.kind||'—'}</span></div>
+    <div class="detail-spec-item"><small>Майдон</small><span>${p.area} м²</span></div>
+    <div class="detail-spec-item"><small>Хонаҳо</small><span>${p.rooms} хона</span></div>
+    <div class="detail-spec-item"><small>Ошёна</small><span>${p.floor||'—'}</span></div>
+    <div class="detail-spec-item"><small>Вазъ</small><span>${p.status==='new'?'Нав / Аврупоӣ':p.status==='good'?'Таъмири хуб':'Таъмир лозим'}</span></div>
+    <div class="detail-spec-item"><small>Дидашуд</small><span>👁 ${p.views||0} маротиба</span></div>`;
+
+  document.getElementById('dDesc').textContent = p.desc || '';
+
+  const msg = encodeURIComponent(`Салом! Мехостам дар бораи объект маълумот гирам:\n🏠 ${p.name}\n📍 ${p.district}\n💰 ${formatPrice(p.price,p.type)}`);
+  document.getElementById('dWA').href = `https://wa.me/${CONTACT.whatsapp}?text=${msg}`;
+  document.getElementById('dTG').href = `https://t.me/${CONTACT.telegram}?text=${msg}`;
+
+  if(p.lat && p.lng){
+    document.getElementById('mapSection').style.display='block';
+    renderDetailMap(p.lat, p.lng, p.name);
+  }
+
+  const similar = properties.filter(x=>x.id!==p.id && (x.district===p.district || x.type===p.type)).slice(0,3);
+  const simGrid = document.getElementById('similarGrid');
+  simGrid.innerHTML = similar.length
+    ? similar.map(propertyCardHTML).join('')
+    : '<p style="color:var(--text-dim);font-size:0.88rem;">Объекти монанд ёфт нашуд.</p>';
+}
+
+function loadDetailPage(){
+  const id = getParam('id');
+  if(!id){ showNotFound(); return; }
+  db.collection('properties').doc(id).get().then(doc=>{
+    if(!doc.exists){ showNotFound(); return; }
+    const p = { id: doc.id, ...doc.data() };
+    db.collection('properties').doc(id).update({ views: (p.views||0)+1 }).catch(()=>{});
+    document.getElementById('detailContent').style.display='block';
+    document.getElementById('notFoundBox').style.display='none';
+    renderDetail(p);
+    hidePageLoader();
+  }).catch(err=>{
+    console.error(err);
+    showNotFound();
+  });
+}
+function showNotFound(){
+  document.getElementById('detailContent').style.display='none';
+  document.getElementById('notFoundBox').style.display='block';
+  hidePageLoader();
+}
+
+listenProperties(()=>{ loadDetailPage(); });
+</script>
+</body>
+</html>

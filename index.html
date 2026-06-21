@@ -1,0 +1,457 @@
+<!DOCTYPE html>
+<html lang="tg">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Imkon Tower — Хариду Фурӯши Хонаҳо</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet"/>
+<link rel="stylesheet" href="style.css"/>
+</head>
+<body>
+
+<!-- PAGE LOADER -->
+<div class="page-loader" id="pageLoader"><div class="spinner"></div><p>Бор шудан истодааст...</p></div>
+
+<!-- NAV -->
+<nav>
+  <a href="index.html" class="logo">
+    <div class="logo-icon">
+      <svg viewBox="0 0 26 26" fill="none" width="24" height="24">
+        <rect x="2" y="14" width="5" height="10" fill="#0A1628"/>
+        <rect x="10.5" y="8" width="5" height="16" fill="#0A1628"/>
+        <rect x="19" y="11" width="5" height="13" fill="#0A1628"/>
+        <polygon points="13,2 13,6 9,10 17,10" fill="#0A1628"/>
+      </svg>
+    </div>
+    <span class="logo-text">IMKON <span>TOWER</span></span>
+  </a>
+  <ul>
+    <li><a href="#listings">Фурӯш</a></li>
+    <li><a href="#listings">Иҷора</a></li>
+    <li><a href="#mortgage">Ипотека</a></li>
+    <li><a href="#how">Раванд</a></li>
+    <li><a href="#contactSection">Тамос</a></li>
+  </ul>
+  <div class="nav-actions">
+    <button class="theme-btn" onclick="toggleTheme()" title="Режими рӯзона/шабона" id="themeBtn">🌙</button>
+    <a href="#" class="btn-outline" onclick="openModal('sellModal');return false;">Эълон гузор</a>
+    <a href="admin.html" class="btn-gold">Админ</a>
+  </div>
+</nav>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-bg"></div>
+  <canvas id="particles"></canvas>
+  <div class="hero-content">
+    <div class="hero-eyebrow">Душанбе, Тоҷикистон</div>
+    <h1>Хонаи идеалии<br/>худро бо <span>Imkon Tower</span> ёб</h1>
+    <p class="hero-sub">Харидан, фурӯхтан ва иҷора гирифтани хона дар як ҷо — оддӣ, бехатар ва бо нархи адолатона.</p>
+    <div class="hero-btns">
+      <button class="btn-gold" style="padding:11px 24px;font-size:0.92rem;" onclick="document.getElementById('listings').scrollIntoView({behavior:'smooth'})">Хонаҳоро бубин</button>
+      <button class="btn-outline" style="padding:11px 24px;font-size:0.92rem;" onclick="document.getElementById('mortgage').scrollIntoView({behavior:'smooth'})">Ҳисоби ипотека</button>
+    </div>
+    <div class="category-grid">
+      <a href="#listings" class="cat-card" onclick="filterCards('sell',null)"><div class="cat-icon">🏠</div><h3>Хона мехарам</h3><p>Харидани хона</p></a>
+      <a href="#listings" class="cat-card" onclick="filterCards('rent',null)"><div class="cat-icon">🔑</div><h3>Иҷора мегирам</h3><p>Иҷораи хона</p></a>
+      <a href="#" class="cat-card" onclick="openModal('sellModal');return false;"><div class="cat-icon">💰</div><h3>Хона мефурӯшам</h3><p>Гузоштани эълон</p></a>
+      <a href="#" class="cat-card" onclick="openModal('rentOutModal');return false;"><div class="cat-icon">📋</div><h3>Иҷора медиҳам</h3><p>Иҷорадиҳии хона</p></a>
+    </div>
+  </div>
+</section>
+
+<!-- STATS -->
+<div class="stats-bar">
+  <div class="stat"><div class="stat-num">240+</div><div class="stat-label">Хонаи фаъол</div></div>
+  <div class="stat"><div class="stat-num">1,800+</div><div class="stat-label">Муштарии хушнуд</div></div>
+  <div class="stat"><div class="stat-num">12</div><div class="stat-label">Ноҳияҳои шаҳр</div></div>
+  <div class="stat"><div class="stat-num">98%</div><div class="stat-label">Бовариноки</div></div>
+</div>
+
+<!-- SEARCH -->
+<div class="search-section">
+  <div class="search-box">
+    <div class="search-field">
+      <label>Намуд</label>
+      <select id="sf-type"><option value="">Ҳама</option><option value="sell">Фурӯш</option><option value="rent">Иҷора</option></select>
+    </div>
+    <div class="search-field">
+      <label>Ноҳия</label>
+      <select id="sf-district">
+        <option value="">Ҳамаи ноҳияҳо</option>
+        <option>Ноҳияи Исмоили Сомонӣ</option><option>Ноҳияи Шоҳмансур</option>
+        <option>Маркази шаҳр</option><option>Ноҳияи Сино</option>
+        <option>Вазири Зарафшон</option>
+      </select>
+    </div>
+    <div class="search-field">
+      <label>Нарх (сомонӣ) — аз/то</label>
+      <div class="price-range">
+        <input type="number" id="sf-pmin" placeholder="Аз" style="width:90px;"/>
+        <span>—</span>
+        <input type="number" id="sf-pmax" placeholder="То" style="width:90px;"/>
+      </div>
+    </div>
+    <div class="search-field">
+      <label>Хонаҳо (ҳадди ақал)</label>
+      <select id="sf-rooms"><option value="0">Ҳама</option><option value="1">1+</option><option value="2">2+</option><option value="3">3+</option><option value="4">4+</option></select>
+    </div>
+    <div class="search-field">
+      <label>Майдон (м²) — аз</label>
+      <input type="number" id="sf-area" placeholder="Масалан 40"/>
+    </div>
+    <button class="search-btn" onclick="applySearch()">🔍 Ҷустуҷӯ</button>
+    <button class="reset-btn" onclick="resetSearch()">✕ Тоза</button>
+  </div>
+</div>
+
+<!-- VIP / ПЕШНИҲОДҲОИ МАХСУС -->
+<section class="vip-section" id="vipSection" style="display:none;">
+  <div class="section-header">
+    <div class="section-eyebrow">⭐ Пешниҳодҳои махсус</div>
+    <h2>Хонаҳои VIP</h2>
+    <p>Объектҳои интихобшуда бо тарҳи фарқкунанда — беҳтарин аз беҳтаринҳо.</p>
+  </div>
+  <div class="vip-grid" id="vipGrid"></div>
+</section>
+
+<!-- NEW LISTINGS -->
+<section id="newSection">
+  <div class="section-header">
+    <div class="section-eyebrow">🆕 Тозатарин</div>
+    <h2>Хонаҳои нав</h2>
+    <p>Объектҳое, ки ба наздикӣ илова шудаанд.</p>
+  </div>
+  <div class="listings-grid" id="newGrid"></div>
+</section>
+
+<!-- LISTINGS -->
+<section id="listings">
+  <div class="section-header">
+    <div class="section-eyebrow">Эълонҳои имрӯза</div>
+    <h2>Хонаҳо ва объектҳо</h2>
+    <p>Беҳтарин объектҳои манзилии шаҳри Душанбе аз соҳибонашон мустақиман.</p>
+  </div>
+  <div class="filter-row">
+    <div class="filter-tabs">
+      <button class="tab active" onclick="filterCards('all',this)">Ҳама</button>
+      <button class="tab" onclick="filterCards('sell',this)">Фурӯш</button>
+      <button class="tab" onclick="filterCards('rent',this)">Иҷора</button>
+      <button class="tab" onclick="filterCards('new',this)">Нав</button>
+    </div>
+    <div style="display:flex;align-items:center;gap:12px;">
+      <span class="results-count" id="resultsCount"></span>
+      <select class="sort-select" onchange="sortCards(this.value)">
+        <option value="default">Тартиб: пешфарз</option>
+        <option value="newest">Аввал навтарин</option>
+        <option value="price-asc">Нарх: аз кам ба зиёд</option>
+        <option value="price-desc">Нарх: аз зиёд ба кам</option>
+        <option value="area-desc">Майдон: бузург аввал</option>
+        <option value="views-desc">Аз рӯи дидан</option>
+      </select>
+    </div>
+  </div>
+  <div class="listings-grid" id="listingsGrid"></div>
+</section>
+
+<!-- MORTGAGE CALCULATOR -->
+<section class="mortgage-section" id="mortgage">
+  <div class="section-header">
+    <div class="section-eyebrow">Ҳисоб</div>
+    <h2>Калкулятори Ипотека</h2>
+    <p>Ҳисоби пардохти моҳонаро мустақиман бубин. Нарх ва пешпардохтро озодона ворид кун.</p>
+  </div>
+  <div class="mortgage-grid">
+    <div class="mort-form">
+      <h3>Маълумот ворид кун</h3>
+      <p>Фоизи солона аз муддат вобаста аст: 6 моҳ = 9.5%, 10 сол = 21%</p>
+
+      <div class="range-row">
+        <label>Нархи хона (сомонӣ) <span id="mortPriceVal">300,000 сом</span></label>
+        <div class="price-input-row">
+          <input type="number" id="mortPrice" min="0" step="1000" value="300000" oninput="onMortPriceInput()" placeholder="Нархро дастӣ ворид кун — бе маҳдудият"/>
+        </div>
+      </div>
+
+      <div class="range-row" style="margin-bottom:10px;">
+        <label>Пешпардохт</label>
+      </div>
+      <div class="down-btns">
+        <button class="down-btn active" id="dp20" onclick="setDown(20)">20%</button>
+        <button class="down-btn" id="dp30" onclick="setDown(30)">30%</button>
+      </div>
+      <div class="pct-input-row">
+        <span style="font-size:0.78rem;color:var(--text-dim);">Ё дастӣ (%):</span>
+        <input type="number" id="mortDownPct" min="0" max="100" step="1" value="20" oninput="onDownPctInput()"/>
+      </div>
+
+      <div class="range-row" style="margin-top:18px;">
+        <label>Муддати қарз <span id="mortTermVal">5 сол</span></label>
+        <input type="range" id="mortTerm" min="6" max="120" step="6" value="60" oninput="calcMortgage()"/>
+      </div>
+
+      <div style="background:rgba(201,168,76,0.07);border:1px solid var(--border);border-radius:8px;padding:12px 14px;margin-top:4px;">
+        <div style="font-size:0.75rem;color:var(--text-dim);margin-bottom:6px;">Фоизи солона (аз муддат вобаста):</div>
+        <div class="rate-indicator">
+          <span style="font-size:0.76rem;color:#25D366;">9.5%</span>
+          <div class="rate-bar"><div class="rate-fill" id="rateFill" style="width:50%;"></div></div>
+          <span style="font-size:0.76rem;color:#E88080;">21%</span>
+        </div>
+        <div style="text-align:center;font-size:0.82rem;margin-top:6px;">Ҳоло: <strong id="currentRateLabel" style="color:var(--gold);">15.25%</strong></div>
+      </div>
+    </div>
+
+    <div class="mort-result">
+      <h3>💰 Натиҷаи ҳисоб</h3>
+      <div class="mort-row"><span class="label">Нархи хона</span><span class="val" id="rPrice">—</span></div>
+      <div class="mort-row"><span class="label">Пешпардохт</span><span class="val" id="rDown">—</span></div>
+      <div class="mort-row"><span class="label">Маблағи қарз</span><span class="val" id="rLoan">—</span></div>
+      <div class="mort-row"><span class="label">Фоизи солона</span><span class="val" id="rRate">—</span></div>
+      <div class="mort-row"><span class="label">Муддат</span><span class="val" id="rTerm">—</span></div>
+      <div class="mort-row" style="border-top:2px solid var(--gold);padding-top:14px;margin-top:4px;">
+        <span class="label" style="font-size:0.9rem;">Пардохти моҳона</span>
+        <span class="val big" id="rMonthly">—</span>
+      </div>
+      <div class="mort-row"><span class="label">Ҳамаи фоиз</span><span class="val" id="rTotalInterest" style="color:#E88080;">—</span></div>
+      <div class="mort-row"><span class="label">Маблағи умумӣ</span><span class="val" id="rTotal">—</span></div>
+      <div class="mort-note">
+        <strong>Эзоҳ:</strong> Фоизи 9.5% барои муддати то 1 сол, 21% барои 10 сол. Муддати байнӣ — фоиз мутаносибан ҳисоб мешавад. Ин ҳисоби тахминӣ аст. <br>Барои гирифтани маълумоти муфассал бо мутахасисони мо ҳамсуҳбат шавед.
+      </div>
+      <button class="form-btn" style="margin-top:16px;" onclick="openMortgageContact()">📞 Маслиҳат гиред</button>
+    </div>
+  </div>
+</section>
+
+<!-- HOW -->
+<section class="how-bg" id="how">
+  <div class="section-header">
+    <div class="section-eyebrow">Раванд</div>
+    <h2>Чӣ тавр кор мекунад</h2>
+    <p>Аз интихоб то баст — ҳама чиз оддист.</p>
+  </div>
+  <div class="steps-row">
+    <div class="step"><div class="step-num">1</div><h4>Интихоб кун</h4><p>Аз рӯйхат ё ҷустуҷӯ хонаи дилхоҳро ёб.</p></div>
+    <div class="step"><div class="step-num">2</div><h4>Тамос гир</h4><p>Тавассути WhatsApp ё Telegram бо мо фавран тамос гир.</p></div>
+    <div class="step"><div class="step-num">3</div><h4>Дидан рав</h4><p>Мо базрасии хонаро ташкил мекунем — ройгон.</p></div>
+    <div class="step"><div class="step-num">4</div><h4>Шартнома баст</h4><p>Санадҳоро тартиб медиҳем ва калидро мегирӣ.</p></div>
+  </div>
+</section>
+
+<!-- CONTACT -->
+<section class="contact-section" id="contactSection">
+  <div class="section-header">
+    <div class="section-eyebrow">Тамос</div>
+    <h2>Бо мо дар тамос бош</h2>
+    <p>Саволе дорӣ? Мо дар WhatsApp ва Telegram ҳамеша омодаем.</p>
+  </div>
+  <div class="contact-grid">
+    <div class="contact-info">
+      <h3>Роҳҳои тамос</h3>
+      <a href="https://wa.me/992937988000" target="_blank" class="contact-item">
+        <div class="ci-icon ci-wa">💬</div>
+        <div class="ci-text"><small>WhatsApp</small><span>+992 93 798 8000</span></div>
+      </a>
+      <a href="https://t.me/+992881180770" target="_blank" class="contact-item">
+        <div class="ci-icon ci-tg">✈️</div>
+        <div class="ci-text"><small>Telegram</small><span>+992 88 118 0770</span></div>
+      </a>
+      <a href="tel:+992937988000" class="contact-item">
+        <div class="ci-icon ci-ph">📞</div>
+        <div class="ci-text"><small>Телефон</small><span>+992 93 798 8000</span></div>
+      </a>
+      <div style="margin-top:16px;">
+        <div class="footer-socials">
+          <a href="https://wa.me/992937988000" target="_blank" class="social-btn wa-btn">💬 WhatsApp</a>
+          <a href="https://t.me/+992881180770" target="_blank" class="social-btn tg-btn">✈️ Telegram</a>
+        </div>
+      </div>
+    </div>
+    <div class="contact-form-box">
+      <h3>Эълон гузор</h3>
+      <p>Маълумотро пур кун — мо тамос мегирем.</p>
+      <div class="form-row"><label>Номи шумо</label><input type="text" id="cf-name" placeholder="Исм ва насаб"/></div>
+      <div class="form-row"><label>Телефон</label><input type="tel" id="cf-phone" placeholder="+992 XX XXX-XXXX"/></div>
+      <div class="form-row"><label>Намуди дархост</label>
+        <select id="cf-type">
+          <option value="Хариди хона">Хариди хона</option>
+          <option value="Иҷораи хона">Иҷораи хона</option>
+          <option value="Фурӯши хона">Фурӯши хона</option>
+          <option value="Иҷорадиҳӣ">Иҷорадиҳӣ</option>
+          <option value="Маслиҳати ипотека">Маслиҳати ипотека</option>
+        </select>
+      </div>
+      <div class="form-row"><label>Паём</label><textarea id="cf-msg" placeholder="Тавсифи хоҳиш..."></textarea></div>
+      <div class="send-btns">
+        <button class="send-wa" onclick="sendToWA('cf')">💬 WhatsApp</button>
+        <button class="send-tg" onclick="sendToTG('cf')">✈️ Telegram</button>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- CTA -->
+<section>
+  <div class="cta-banner">
+    <h2>Хонаи худро ҳозир фурӯш ё иҷора деҳ</h2>
+    <p>Эълони шуморо ба садҳо харидорон мерасонем.</p>
+    <div class="cta-actions">
+      <button class="btn-gold" style="padding:12px 26px;" onclick="openModal('sellModal')">Эълон барои фурӯш</button>
+      <button class="btn-outline" style="padding:12px 26px;" onclick="openModal('rentOutModal')">Эълон барои иҷора</button>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-grid">
+    <div class="footer-brand">
+      <div class="logo">
+        <div class="logo-icon" style="width:34px;height:34px;">
+          <svg viewBox="0 0 26 26" fill="none" width="20" height="20">
+            <rect x="2" y="14" width="5" height="10" fill="#0A1628"/>
+            <rect x="10.5" y="8" width="5" height="16" fill="#0A1628"/>
+            <rect x="19" y="11" width="5" height="13" fill="#0A1628"/>
+            <polygon points="13,2 13,6 9,10 17,10" fill="#0A1628"/>
+          </svg>
+        </div>
+        <span class="logo-text" style="font-size:1.05rem;">IMKON <span>TOWER</span></span>
+      </div>
+      <p>Платформаи эътимодноки хариду фурӯш ва иҷораи манзил дар Душанбе.</p>
+      <div class="footer-socials">
+        <a href="https://wa.me/992937988000" target="_blank" class="social-btn wa-btn">💬 WhatsApp</a>
+        <a href="https://t.me/+992881180770" target="_blank" class="social-btn tg-btn">✈️ Telegram</a>
+      </div>
+    </div>
+    <div>
+      <h5>Хизматҳо</h5>
+      <ul>
+        <li><a href="#listings" onclick="filterCards('sell',null)">Харидани хона</a></li>
+        <li><a href="#listings" onclick="filterCards('sell',null)">Фурӯхтани хона</a></li>
+        <li><a href="#listings" onclick="filterCards('rent',null)">Иҷораи хона</a></li>
+        <li><a href="#mortgage">Калкулятори ипотека</a></li>
+      </ul>
+    </div>
+    <div>
+      <h5>Компания</h5>
+      <ul>
+        <li><a href="#">Дар бораи мо</a></li>
+        <li><a href="#">Мутахассисон</a></li>
+        <li><a href="#">Блог</a></li>
+        <li><a href="#">Ба мо пайваст шав</a></li>
+      </ul>
+    </div>
+    <div>
+      <h5>Тамос</h5>
+      <ul>
+        <li><a href="#">📍 Душанбе, Тоҷикистон</a></li>
+        <li><a href="tel:+992937988000">📞 +992 93 798 8000</a></li>
+        <li><a href="https://wa.me/992937988000" target="_blank">💬 WhatsApp</a></li>
+        <li><a href="https://t.me/+992881180770" target="_blank">✈️ Telegram</a></li>
+      </ul>
+    </div>
+  </div>
+  <div class="footer-bottom">
+    <p>© 2026 Imkon Tower. Ҳамаи ҳуқуқҳо маҳфуз аст.</p>
+    <p>Сохта бо ❤️ барои Тоҷикистон</p>
+    <p>Developed by <a href="https://www.instagram.com/m_qurbonov10?igsh=MXF6a3Rzb2RvMHF3dQ==">m_qurbonov10</a></p>
+  </div>
+</footer>
+
+<!-- MODALS -->
+<div class="modal-overlay" id="sellModal">
+  <div class="modal">
+    <button class="modal-close" onclick="closeModal('sellModal')">×</button>
+    <h3>Хонаро ба фурӯш гузор</h3>
+    <p>Маълумотро пур кун — мо фавран тамос мегирем.</p>
+    <div class="form-row"><label>Номи шумо</label><input type="text" id="sm-name" placeholder="Исм ва насаб"/></div>
+    <div class="form-row"><label>Телефон</label><input type="tel" id="sm-phone" placeholder="+992 XX XXX-XXXX"/></div>
+    <div class="form-row"><label>Суроға</label><input type="text" id="sm-addr" placeholder="Ноҳия, кӯча, рақами бино"/></div>
+    <div class="form-row"><label>Намуди хона</label>
+      <select id="sm-kind"><option>Квартира</option><option>Хонаи алоҳида</option><option>Коттедж</option><option>Офис</option></select>
+    </div>
+    <div class="form-row"><label>Нарх (сомонӣ)</label><input type="number" id="sm-price" placeholder="250000"/></div>
+    <div class="form-row"><label>Иловагӣ</label><textarea id="sm-msg" placeholder="Майдон, ошёна, таъмир..."></textarea></div>
+    <div class="send-btns">
+      <button class="send-wa" onclick="sendModalToWA('sm','Фурӯши хона')">💬 WhatsApp</button>
+      <button class="send-tg" onclick="sendModalToTG('sm','Фурӯши хона')">✈️ Telegram</button>
+    </div>
+  </div>
+</div>
+
+<div class="modal-overlay" id="rentOutModal">
+  <div class="modal">
+    <button class="modal-close" onclick="closeModal('rentOutModal')">×</button>
+    <h3>Хонаро ба иҷора деҳ</h3>
+    <p>Маълумотро пур кун — мо фавран тамос мегирем.</p>
+    <div class="form-row"><label>Номи шумо</label><input type="text" id="ro-name" placeholder="Исм ва насаб"/></div>
+    <div class="form-row"><label>Телефон</label><input type="tel" id="ro-phone" placeholder="+992 XX XXX-XXXX"/></div>
+    <div class="form-row"><label>Суроға</label><input type="text" id="ro-addr" placeholder="Ноҳия, кӯча, рақами бино"/></div>
+    <div class="form-row"><label>Намуди иҷора</label>
+      <select id="ro-kind"><option>Рӯзона</option><option>Моҳона</option><option>Солона</option></select>
+    </div>
+    <div class="form-row"><label>Нарх (сомонӣ/моҳ)</label><input type="number" id="ro-price" placeholder="1500"/></div>
+    <div class="form-row"><label>Иловагӣ</label><textarea id="ro-msg" placeholder="Майдон, ошёна, таъмир..."></textarea></div>
+    <div class="send-btns">
+      <button class="send-wa" onclick="sendModalToWA('ro','Иҷорадиҳии хона')">💬 WhatsApp</button>
+      <button class="send-tg" onclick="sendModalToTG('ro','Иҷорадиҳии хона')">✈️ Telegram</button>
+    </div>
+  </div>
+</div>
+
+<div class="modal-overlay" id="mortContactModal">
+  <div class="modal" style="max-width:440px;">
+    <button class="modal-close" onclick="closeModal('mortContactModal')">×</button>
+    <h3>Маслиҳати ипотека</h3>
+    <p id="mortContactInfo" style="color:var(--text-dim);font-size:0.83rem;margin-bottom:18px;line-height:1.6;"></p>
+    <div class="form-row"><label>Номи шумо</label><input type="text" id="mc-name" placeholder="Исм ва насаб"/></div>
+    <div class="form-row"><label>Телефон</label><input type="tel" id="mc-phone" placeholder="+992 XX XXX-XXXX"/></div>
+    <div class="send-btns">
+      <button class="send-wa" onclick="sendMortContact('wa')">💬 WhatsApp</button>
+      <button class="send-tg" onclick="sendMortContact('tg')">✈️ Telegram</button>
+    </div>
+  </div>
+</div>
+
+<!-- COMPARE MODAL -->
+<div class="modal-overlay" id="compareModal">
+  <div class="modal" style="max-width:700px;">
+    <button class="modal-close" onclick="closeModal('compareModal')">×</button>
+    <h3>Мукоисаи хонаҳо</h3>
+    <div class="compare-table-wrap" id="compareTableWrap" style="margin-top:16px;"></div>
+  </div>
+</div>
+
+<!-- COMPARE BAR -->
+<div class="compare-bar" id="compareBar">
+  <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap;">
+    <span style="font-size:0.82rem;color:var(--gold);font-weight:600;">Мукоиса:</span>
+    <div class="compare-bar-items" id="compareItems"></div>
+  </div>
+  <div class="compare-actions">
+    <button class="btn-gold" onclick="openCompare()">Муқоиса кун</button>
+    <button class="btn-outline" onclick="clearCompare()">Тоза кун</button>
+  </div>
+</div>
+
+<!-- ═══ FIREBASE SDK (compat) ═══ -->
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-storage-compat.js"></script>
+<script src="firebase-config.js"></script>
+<script src="map.js"></script>
+<script src="common.js"></script>
+<script src="app.js"></script>
+<script>
+// ── INIT ──
+initParticles();
+calcMortgage();
+listenProperties(()=>{
+  renderVipSection();
+  renderNewSection();
+  renderCards(currentFilter);
+  hidePageLoader();
+});
+</script>
+</body>
+</html>
