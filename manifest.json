@@ -1,0 +1,25 @@
+{
+  "name": "Imkon Tower — Хариду Фурӯши Хонаҳо",
+  "short_name": "Imkon Tower",
+  "description": "Беҳтарин объектҳои манзилии шаҳри Душанбе",
+  "start_url": "/imkon-tower/",
+  "scope": "/imkon-tower/",
+  "display": "standalone",
+  "orientation": "portrait-primary",
+  "background_color": "#0A1628",
+  "theme_color": "#C9A84C",
+  "icons": [
+    {
+      "src": "icons/icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "icons/icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ]
+}

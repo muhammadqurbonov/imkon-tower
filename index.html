@@ -5,12 +5,18 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
 <title>Imkon Tower — Хариду Фурӯши Хонаҳо</title>
 <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet"/>
-<link rel="stylesheet" href="style.css"/>
+<link rel="manifest" href="manifest.json"/>
+<meta name="theme-color" content="#C9A84C"/>
+<meta name="apple-mobile-web-app-capable" content="yes"/>
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent"/>
+<meta name="apple-mobile-web-app-title" content="Imkon Tower"/>
+<link rel="apple-touch-icon" href="icons/icon-192.png"/>
+
 </head>
 <body>
 
 <!-- PAGE LOADER -->
-<div class="page-loader" id="pageLoader"><div class="spinner"></div><p>Бор шуда истодааст...</p></div>
+<div class="page-loader" id="pageLoader"><div class="spinner"></div><p>Бор шудан истодааст...</p></div>
 
 <!-- NAV -->
 <nav>
@@ -45,16 +51,16 @@
   <canvas id="particles"></canvas>
   <div class="hero-content">
     <div class="hero-eyebrow">Душанбе, Тоҷикистон</div>
-    <h1>Хонаи идеалии<br/>худро бо <span>Imkon Tower</span> ёбед!</h1>
-    <p class="hero-sub">Харидан, фурӯхтан, ба иҷора гирифтан ва ба иҷора додани хона дар як ҷо — оддӣ, бехатар ва бо нархи одилона.</p>
+    <h1>Хонаи идеалии<br/>худро бо <span>Imkon Tower</span> ёб</h1>
+    <p class="hero-sub">Харидан, фурӯхтан ва иҷора гирифтани хона дар як ҷо — оддӣ, бехатар ва бо нархи адолатона.</p>
     <div class="hero-btns">
       <button class="btn-gold" style="padding:11px 24px;font-size:0.92rem;" onclick="document.getElementById('listings').scrollIntoView({behavior:'smooth'})">Хонаҳоро бубин</button>
       <button class="btn-outline" style="padding:11px 24px;font-size:0.92rem;" onclick="document.getElementById('mortgage').scrollIntoView({behavior:'smooth'})">Ҳисоби ипотека</button>
     </div>
     <div class="category-grid">
       <a href="#listings" class="cat-card" onclick="filterCards('sell',null)"><div class="cat-icon">🏠</div><h3>Хона мехарам</h3><p>Харидани хона</p></a>
-      <a href="#" class="cat-card" onclick="openModal('sellModal');return false;"><div class="cat-icon">💰</div><h3>Хона мефурӯшам</h3><p>Гузоштани эълон</p></a>
       <a href="#listings" class="cat-card" onclick="filterCards('rent',null)"><div class="cat-icon">🔑</div><h3>Иҷора мегирам</h3><p>Иҷораи хона</p></a>
+      <a href="#" class="cat-card" onclick="openModal('sellModal');return false;"><div class="cat-icon">💰</div><h3>Хона мефурӯшам</h3><p>Гузоштани эълон</p></a>
       <a href="#" class="cat-card" onclick="openModal('rentOutModal');return false;"><div class="cat-icon">📋</div><h3>Иҷора медиҳам</h3><p>Иҷорадиҳии хона</p></a>
     </div>
   </div>
@@ -64,8 +70,8 @@
 <div class="stats-bar">
   <div class="stat"><div class="stat-num">240+</div><div class="stat-label">Хонаи фаъол</div></div>
   <div class="stat"><div class="stat-num">1,800+</div><div class="stat-label">Муштарии хушнуд</div></div>
-  <div class="stat"><div class="stat-num">4</div><div class="stat-label">Ноҳияҳои шаҳр</div></div>
-  <div class="stat"><div class="stat-num">98%</div><div class="stat-label">Эътимоднокӣ</div></div>
+  <div class="stat"><div class="stat-num">12</div><div class="stat-label">Ноҳияҳои шаҳр</div></div>
+  <div class="stat"><div class="stat-num">98%</div><div class="stat-label">Бовариноки</div></div>
 </div>
 
 <!-- SEARCH -->
@@ -457,6 +463,15 @@ listenProperties(()=>{
   renderCards(currentFilter);
   hidePageLoader();
 });
+</script>
+<script>
+if('serviceWorker' in navigator){
+  window.addEventListener('load', ()=>{
+    navigator.serviceWorker.register('/imkon-tower/service-worker.js')
+      .then(()=> console.log('SW бақайд гирифта шуд ✓'))
+      .catch(err=> console.log('SW хатогӣ:', err));
+  });
+}
 </script>
 </body>
 </html>
