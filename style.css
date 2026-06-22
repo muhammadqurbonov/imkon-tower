@@ -4,7 +4,7 @@
   --green:#25D366;--blue:#0088cc;--red:#E25C5C;
 }
 [data-theme="light"]{
-  --navy:#F0F4F8;--navy-mid:#DDE6F0;--gold:#B8901F;--gold-light:#D4A82A;
+  --navy:#F0F4F8;--navy-mid:#DDE6F0;--gold:#B8901F;--gold-light:#eec041;
   --cream:#1A2535;--text-dim:#556070;--card-bg:#FFFFFF;--border:rgba(184,144,31,0.3);
 }
 *{margin:0;padding:0;box-sizing:border-box;}
