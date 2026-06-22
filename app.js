@@ -7,7 +7,7 @@ let properties = [];           // ҳамаи объектҳо аз Firestore
 let currentFilter = 'all';
 let compareList = [];
 let sortMode = 'default';
-let activeSearch = { type:'', district:'', pmin:0, pmax:0, rooms:0, area:0, query:'' };
+let activeSearch = { type:'', district:'', pmin:0, pmax:0, rooms:0, area:0 };
 let unsubscribeProperties = null;
 
 // ── FORMAT HELPERS ──
@@ -60,17 +60,16 @@ function applySearch(){
     pmin: parseFloat(v('sf-pmin'))||0,
     pmax: parseFloat(v('sf-pmax'))||0,
     rooms: parseInt(v('sf-rooms'))||0,
-    area: parseFloat(v('sf-area'))||0,
-    query: v('sf-query')||''
+    area: parseFloat(v('sf-area'))||0
   };
   renderCards(currentFilter);
   document.getElementById('listings')?.scrollIntoView({behavior:'smooth'});
 }
 function resetSearch(){
-  ['sf-type','sf-district','sf-query'].forEach(id=>{ const e=document.getElementById(id); if(e) e.value=''; });
+  ['sf-type','sf-district'].forEach(id=>{ const e=document.getElementById(id); if(e) e.value=''; });
   const r=document.getElementById('sf-rooms'); if(r) r.value='0';
   ['sf-pmin','sf-pmax','sf-area'].forEach(id=>{ const e=document.getElementById(id); if(e) e.value=''; });
-  activeSearch={type:'',district:'',pmin:0,pmax:0,rooms:0,area:0,query:''};
+  activeSearch={type:'',district:'',pmin:0,pmax:0,rooms:0,area:0};
   renderCards(currentFilter);
 }
 function applyFilters(list){
@@ -81,15 +80,6 @@ function applyFilters(list){
     if(activeSearch.pmax>0 && p.price>activeSearch.pmax) return false;
     if(activeSearch.rooms>0 && p.rooms<activeSearch.rooms) return false;
     if(activeSearch.area>0 && p.area<activeSearch.area) return false;
-    // ── Матни ҷустуҷӯ ──
-    if(activeSearch.query){
-      const q = activeSearch.query.toLowerCase();
-      const haystack = [
-        p.name, p.district, p.address, p.desc,
-        p.kind, String(p.price), String(p.rooms), String(p.area), p.floor
-      ].join(' ').toLowerCase();
-      if(!haystack.includes(q)) return false;
-    }
     return true;
   });
 }

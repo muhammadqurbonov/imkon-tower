@@ -1,5 +1,5 @@
 :root{
-  --navy:#0A1628;--navy-mid:#1E3A5F;--gold:#C9A84C;--gold-light:#f2ce63;
+  --navy:#0A1628;--navy-mid:#1E3A5F;--gold:#C9A84C;--gold-light:#E8C96A;
   --cream:#F5F0E8;--text-dim:#8A9BB0;--card-bg:#111E30;--border:rgba(201,168,76,0.25);
   --green:#25D366;--blue:#0088cc;--red:#E25C5C;
 }
@@ -331,10 +331,7 @@ footer ul a:hover{color:var(--gold);}
 
 /* ═══════ ADMIN ═══════ */
 #adminPanel{display:none;position:fixed;inset:0;z-index:300;background:#060E1A;overflow-y:auto;}
-.admin-nav{background:var(--card-bg);border-bottom:1px solid var(--border);padding:0 26px;height:62px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:200;}
-.burger-btn{display:none;flex-direction:column;gap:5px;cursor:pointer;background:none;border:none;padding:8px;margin-right:8px;}
-.burger-btn span{display:block;width:22px;height:2px;background:var(--gold);border-radius:2px;transition:all 0.3s;}
-.mob-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,0.5);z-index:99;}
+.admin-nav{background:var(--card-bg);border-bottom:1px solid var(--border);padding:0 26px;height:62px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:10;}
 .admin-body{display:grid;grid-template-columns:216px 1fr;min-height:calc(100vh - 62px);}
 .admin-sidebar{background:rgba(17,30,48,0.5);border-right:1px solid var(--border);padding:18px 0;}
 .admin-sidebar ul{list-style:none;}
@@ -414,10 +411,7 @@ tr:last-child td{border-bottom:none;}
   .contact-grid{grid-template-columns:1fr;}
   .mortgage-grid{grid-template-columns:1fr;}
   .admin-body{grid-template-columns:1fr;}
-  .admin-sidebar{display:none;position:fixed;top:62px;left:0;width:220px;height:calc(100vh - 62px);z-index:100;background:var(--card-bg);border-right:1px solid var(--border);box-shadow:4px 0 20px rgba(0,0,0,0.4);}
-  .admin-sidebar.mob-open{display:block;}
-  .burger-btn{display:flex!important;}
-  .mob-overlay{display:block!important;}
+  .admin-sidebar{display:none;}
   .admin-stats{grid-template-columns:repeat(2,1fr);}
   .form-grid{grid-template-columns:1fr;}
   nav ul{display:none;}

@@ -5,13 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
 <title>Imkon Tower — Хариду Фурӯши Хонаҳо</title>
 <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet"/>
-<link rel="manifest" href="manifest.json"/>
-<meta name="theme-color" content="#C9A84C"/>
-<meta name="apple-mobile-web-app-capable" content="yes"/>
-<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent"/>
-<meta name="apple-mobile-web-app-title" content="Imkon Tower"/>
-<link rel="apple-touch-icon" href="icons/icon-192.png"/>
-
+<link rel="stylesheet" href="style.css"/>
 </head>
 <body>
 
@@ -105,11 +99,6 @@
     <div class="search-field">
       <label>Майдон (м²) — аз</label>
       <input type="number" id="sf-area" placeholder="Масалан 40"/>
-    </div>
-    <div class="search-field" style="flex:2;min-width:180px;">
-      <label>Матн</label>
-      <input type="text" id="sf-query" placeholder="Масалан: Сино, 3 хона, Аврупоӣ..."
-        onkeydown="if(event.key==='Enter') applySearch()"/>
     </div>
     <button class="search-btn" onclick="applySearch()">🔍 Ҷустуҷӯ</button>
     <button class="reset-btn" onclick="resetSearch()">✕ Тоза</button>
@@ -463,15 +452,6 @@ listenProperties(()=>{
   renderCards(currentFilter);
   hidePageLoader();
 });
-</script>
-<script>
-if('serviceWorker' in navigator){
-  window.addEventListener('load', ()=>{
-    navigator.serviceWorker.register('/imkon-tower/service-worker.js')
-      .then(()=> console.log('SW бақайд гирифта шуд ✓'))
-      .catch(err=> console.log('SW хатогӣ:', err));
-  });
-}
 </script>
 </body>
 </html>

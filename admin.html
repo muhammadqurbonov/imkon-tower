@@ -47,18 +47,14 @@
       </div>
       <span class="logo-text" style="font-size:0.95rem;">IMKON <span>TOWER</span> — Админ</span>
     </div>
-    <div style="display:flex;gap:8px;align-items:center;">
-      <button class="burger-btn" id="burgerBtn" onclick="toggleMobSidebar()" title="Меню">
-        <span></span><span></span><span></span>
-      </button>
+    <div style="display:flex;gap:8px;">
       <a href="index.html" class="btn-outline">← Ба сайт</a>
       <button class="btn-gold" onclick="showAdminPage('addProperty')">+ Хона иловакун</button>
       <button class="btn-outline" onclick="doLogout()">Баромад</button>
     </div>
   </div>
-  <div class="mob-overlay" id="mobOverlay" onclick="toggleMobSidebar()"></div>
   <div class="admin-body">
-    <div class="admin-sidebar" id="adminSidebar">
+    <div class="admin-sidebar">
       <ul>
         <li><a class="active" onclick="showAdminPage('dashboard',this)">📊 Dashboard</a></li>
         <li><a onclick="showAdminPage('properties',this)">🏠 Хонаҳо</a></li>
@@ -142,7 +138,7 @@
               <input type="file" id="ap-media" accept="image/*,video/*" multiple onchange="handleMediaUpload(this)"/>
               <div class="upload-icon">📷</div>
               <p>Сурат ё видеоро ин ҷо кашида биёр ё клик кун</p>
-              <small>JPG, PNG, MP4, MOV — якчанд файл (то Firebase Storage бор мешаванд)</small>
+              <small>JPG, PNG, MP4, MOV — якчанд файл (Cloudinary-га бор мешаванд)</small>
             </div>
             <div class="media-preview-grid" id="mediaPreviewGrid"></div>
           </div>
@@ -198,21 +194,6 @@ auth.onAuthStateChanged(user=>{
     document.getElementById('adminDash').style.display='none';
   }
 });
-// ── МОБАЙЛ SIDEBAR ──
-function toggleMobSidebar(){
-  const sb = document.getElementById('adminSidebar');
-  const ov = document.getElementById('mobOverlay');
-  if(!sb) return;
-  sb.classList.toggle('mob-open');
-  if(ov) ov.style.display = sb.classList.contains('mob-open') ? 'block' : 'none';
-}
-function closeMobSidebar(){
-  const sb = document.getElementById('adminSidebar');
-  const ov = document.getElementById('mobOverlay');
-  if(sb) sb.classList.remove('mob-open');
-  if(ov) ov.style.display = 'none';
-}
-
 function doLogin(){
   const email=v('loginUser'), pass=v('loginPass');
   document.getElementById('loginError').textContent='';
@@ -236,7 +217,6 @@ function changeAdminPassword(){
 
 // ── ADMIN NAVIGATION ──
 function showAdminPage(page,link){
-  closeMobSidebar();
   document.querySelectorAll('.admin-page').forEach(p=>p.classList.remove('active'));
   document.getElementById('page-'+page).classList.add('active');
   document.querySelectorAll('.admin-sidebar a').forEach(a=>a.classList.remove('active'));
@@ -373,16 +353,26 @@ function renderMediaPreview(){
 }
 function removeMed(i){ pendingMedia.splice(i,1); renderMediaPreview(); }
 
-// ── UPLOAD TO FIREBASE STORAGE ──
+// ── UPLOAD TO CLOUDINARY ──
+const CLOUDINARY_CLOUD = 'dstcdluhm';
+const CLOUDINARY_PRESET = 'imkon_upload';
+
 async function uploadPendingMedia(){
   const uploaded = [];
   for(const m of pendingMedia){
     if(m.existing){ uploaded.push({url:m.url, type:m.type}); continue; }
-    const path = `properties/${Date.now()}_${Math.random().toString(36).slice(2)}_${m.file.name}`;
-    const ref = storage.ref().child(path);
-    await ref.put(m.file);
-    const url = await ref.getDownloadURL();
-    uploaded.push({ url, type: m.type });
+    const formData = new FormData();
+    formData.append('file', m.file);
+    formData.append('upload_preset', CLOUDINARY_PRESET);
+    formData.append('folder', 'imkon_tower');
+    const resourceType = m.type === 'video' ? 'video' : 'image';
+    const res = await fetch(
+      `https://api.cloudinary.com/v1_1/${CLOUDINARY_CLOUD}/${resourceType}/upload`,
+      { method: 'POST', body: formData }
+    );
+    if(!res.ok) throw new Error('Cloudinary upload failed');
+    const data = await res.json();
+    uploaded.push({ url: data.secure_url, type: m.type });
   }
   return uploaded;
 }
