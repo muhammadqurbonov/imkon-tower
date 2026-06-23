@@ -179,8 +179,9 @@
             <option value="usd">🇺🇸 USD $</option>
           </select>
         </div>
-        <div style="font-size:0.76rem;color:var(--text-dim);margin-top:4px;">
-          💱 Курс: 1 $ ≈ 10.9 сомонӣ (тахминӣ)
+        <div style="font-size:0.76rem;color:var(--text-dim);margin-top:4px;display:flex;align-items:center;gap:6px;">
+          💱 Курси имрӯз: <strong style="color:var(--gold);" class="usd-rate-display">бор шудан...</strong>
+          <span style="color:var(--text-dim);font-size:0.7rem;">(<span class="usd-rate-date"></span>)</span>
         </div>
       </div>
 
@@ -228,7 +229,7 @@
       <div class="mort-row"><span class="label">Ҳамаи фоиз</span><span class="val" id="rTotalInterest" style="color:#E88080;">—</span></div>
       <div class="mort-row"><span class="label">Маблағи умумӣ</span><span class="val" id="rTotal">—</span></div>
       <div class="mort-note">
-        <strong>Эзоҳ:</strong> Фоизи солона <strong>21%</strong> барои ҳамаи муддатҳо яксон аст — аз 6 моҳ то 10 сол тағйир намеёбад. Нархро ба сомонӣ ё доллар ворид кардан мумкин аст. 💱 Курс: 1 $ ≈ 10.9 сом (тахминӣ). Ин ҳисоби тахминӣ аст — барои маълумоти дақиқтар бо мутахассисони мо тамос гиред.
+        <strong>Эзоҳ:</strong> Фоизи солона <strong>21%</strong> барои ҳамаи муддатҳо яксон аст. Нархро ба сомонӣ ё доллар ворид кардан мумкин. 💱 Курси доллар аз манбаи кушодаи <em>fawazahmed0/currency-api</em> ҳар рӯз навсозӣ мешавад. Ин ҳисоби тахминӣ аст — барои маълумоти дақиқтар бо мутахассисони мо тамос гиред.
       </div>
       <button class="form-btn" style="margin-top:16px;" onclick="openMortgageContact()">📞 Маслиҳат гиред</button>
     </div>
