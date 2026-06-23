@@ -420,3 +420,17 @@ tr:last-child td{border-bottom:none;}
   .search-box{flex-direction:column;}
   .coord-inputs{grid-template-columns:1fr;}
 }
+
+/* ═══════ DUAL CURRENCY PRICE ═══════ */
+.price-usd{
+  font-size:0.72em;
+  color:var(--text-dim);
+  font-weight:400;
+  margin-left:4px;
+}
+.card-price .price-usd{
+  display:block;
+  font-size:0.7em;
+  margin-top:1px;
+  margin-left:0;
+}
