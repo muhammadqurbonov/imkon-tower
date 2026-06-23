@@ -164,12 +164,23 @@
   <div class="mortgage-grid">
     <div class="mort-form">
       <h3>Маълумот ворид кун</h3>
-      <p>Фоизи солона аз муддат вобаста аст: 6 моҳ = 9.5%, 10 сол = 21%</p>
+      <p style="color:var(--gold);font-weight:600;">📌 Фоизи солона: <strong>21%</strong> — новобаста аз муддат</p>
 
       <div class="range-row">
-        <label>Нархи хона (сомонӣ) <span id="mortPriceVal">300,000 сом</span></label>
-        <div class="price-input-row">
-          <input type="number" id="mortPrice" min="0" step="1000" value="300000" oninput="onMortPriceInput()" placeholder="Нархро дастӣ ворид кун — бе маҳдудият"/>
+        <label id="mortPriceLabel">Нархи хона (сомонӣ) <span id="mortPriceVal">300,000 сом</span></label>
+        <div class="price-input-row" style="display:flex;gap:8px;align-items:center;">
+          <input type="number" id="mortPrice" min="0" step="1000" value="300000" oninput="onMortPriceInput()" placeholder="Нархро дастӣ ворид кун" style="flex:1;"/>
+          <select id="mortCurrency" onchange="onMortCurrencyChange()" style="
+            padding:10px 10px;border-radius:8px;border:1px solid var(--border);
+            background:var(--input-bg,#0d1e35);color:var(--gold);
+            font-weight:700;font-size:0.88rem;cursor:pointer;min-width:90px;
+          ">
+            <option value="som">🇹🇯 Сом</option>
+            <option value="usd">🇺🇸 USD $</option>
+          </select>
+        </div>
+        <div style="font-size:0.76rem;color:var(--text-dim);margin-top:4px;">
+          💱 Курс: 1 $ ≈ 10.9 сомонӣ (тахминӣ)
         </div>
       </div>
 
@@ -190,14 +201,16 @@
         <input type="range" id="mortTerm" min="6" max="120" step="6" value="60" oninput="calcMortgage()"/>
       </div>
 
-      <div style="background:rgba(201,168,76,0.07);border:1px solid var(--border);border-radius:8px;padding:12px 14px;margin-top:4px;">
-        <div style="font-size:0.75rem;color:var(--text-dim);margin-bottom:6px;">Фоизи солона (аз муддат вобаста):</div>
+      <div style="background:rgba(201,168,76,0.1);border:1px solid var(--gold);border-radius:8px;padding:12px 14px;margin-top:4px;">
+        <div style="font-size:0.75rem;color:var(--text-dim);margin-bottom:6px;">Фоизи солона (доимӣ):</div>
         <div class="rate-indicator">
-          <span style="font-size:0.76rem;color:#25D366;">9.5%</span>
-          <div class="rate-bar"><div class="rate-fill" id="rateFill" style="width:50%;"></div></div>
-          <span style="font-size:0.76rem;color:#E88080;">21%</span>
+          <span style="font-size:0.76rem;color:var(--text-dim);">0%</span>
+          <div class="rate-bar"><div class="rate-fill" id="rateFill" style="width:100%;"></div></div>
+          <span style="font-size:0.76rem;color:var(--gold);font-weight:700;">21%</span>
         </div>
-        <div style="text-align:center;font-size:0.82rem;margin-top:6px;">Ҳоло: <strong id="currentRateLabel" style="color:var(--gold);">15.25%</strong></div>
+        <div style="text-align:center;font-size:0.9rem;margin-top:8px;font-weight:700;">
+          Фоиз: <strong id="currentRateLabel" style="color:var(--gold);font-size:1.1rem;">21%</strong> солона
+        </div>
       </div>
     </div>
 
@@ -215,7 +228,7 @@
       <div class="mort-row"><span class="label">Ҳамаи фоиз</span><span class="val" id="rTotalInterest" style="color:#E88080;">—</span></div>
       <div class="mort-row"><span class="label">Маблағи умумӣ</span><span class="val" id="rTotal">—</span></div>
       <div class="mort-note">
-        <strong>Эзоҳ:</strong> Фоизи 9.5% барои муддати то 1 сол, 21% барои 10 сол. Муддати байнӣ — фоиз мутаносибан ҳисоб мешавад. Ин ҳисоби тахминӣ аст. <br>Барои гирифтани маълумоти муфассал бо мутахасисони мо ҳамсуҳбат шавед.
+        <strong>Эзоҳ:</strong> Фоизи солона <strong>21%</strong> барои ҳамаи муддатҳо яксон аст — аз 6 моҳ то 10 сол тағйир намеёбад. Нархро ба сомонӣ ё доллар ворид кардан мумкин аст. 💱 Курс: 1 $ ≈ 10.9 сом (тахминӣ). Ин ҳисоби тахминӣ аст — барои маълумоти дақиқтар бо мутахассисони мо тамос гиред.
       </div>
       <button class="form-btn" style="margin-top:16px;" onclick="openMortgageContact()">📞 Маслиҳат гиред</button>
     </div>
