@@ -64,6 +64,7 @@
         <h1 class="detail-title" id="dTitle"></h1>
         <div class="detail-location" id="dLocation"></div>
         <div class="detail-price" id="dPrice"></div>
+        <div id="dPriceUsd" style="font-size:0.85rem;color:var(--text-dim);margin-top:-6px;margin-bottom:8px;"></div>
         <div class="detail-specs-grid" id="dSpecs"></div>
         <div class="detail-desc" id="dDesc"></div>
         <div class="detail-contact-btns">
@@ -173,7 +174,9 @@ function renderDetail(p){
 
   document.getElementById('dTitle').textContent = p.name;
   document.getElementById('dLocation').textContent = '📍 '+p.district+(p.address?', '+p.address:'');
+  const priceUsd = somToUsd(p.price||0);
   document.getElementById('dPrice').innerHTML = formatPrice(p.price,p.type)+`<small> ${p.type==='rent'?'дар моҳ':'нарх'}</small>`;
+  document.getElementById('dPriceUsd').textContent = `💱 ≈ ${fmt(priceUsd)} USD`;
 
   document.getElementById('dSpecs').innerHTML = `
     <div class="detail-spec-item"><small>Намуд</small><span>${p.kind||'—'}</span></div>
