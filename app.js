@@ -11,11 +11,30 @@ let activeSearch = { type:'', district:'', pmin:0, pmax:0, rooms:0, area:0 };
 let unsubscribeProperties = null;
 
 // ── FORMAT HELPERS ──
+const USD_RATE = 10.9; // 1 USD = 10.9 сомонӣ (курси тахминӣ)
 function fmt(n){ return Number(n||0).toLocaleString('ru-RU'); }
-function formatPrice(n,t){
-  if(t==='rent') return fmt(n)+' сом';
-  if(n>=1000000) return (n/1000000).toFixed(2)+' млн сом';
-  return fmt(n)+' сом';
+function somToUsd(n){ return Math.round(n / USD_RATE); }
+function usdToSom(n){ return Math.round(n * USD_RATE); }
+function formatPrice(n, t){
+  const som = Number(n||0);
+  const usd = somToUsd(som);
+  const usdStr = fmt(usd)+' $';
+  if(t==='rent'){
+    return `${fmt(som)} сом <span class="price-usd">(≈ ${usdStr})</span>`;
+  }
+  if(som >= 1000000){
+    return `${(som/1000000).toFixed(2)} млн сом <span class="price-usd">(≈ ${usdStr})</span>`;
+  }
+  return `${fmt(som)} сом <span class="price-usd">(≈ ${usdStr})</span>`;
+}
+// Нархро аз ворид (сомонӣ ё доллар) ба сомонӣ табдил деҳ
+function parsePriceToSom(val, currency){
+  const n = parseFloat(String(val).replace(/\s/g,'')) || 0;
+  return currency === 'usd' ? usdToSom(n) : n;
+}
+// Нархро аз сомонӣ ба валютаи интихобшуда нишон деҳ
+function somToCurrency(som, currency){
+  return currency === 'usd' ? somToUsd(som) : som;
 }
 function v(id){ const e=document.getElementById(id); return e? e.value.trim() : ''; }
 function emojiFor(kind){
@@ -271,24 +290,50 @@ function onDownPctInput(){
   document.querySelectorAll('.down-btn').forEach(b=>b.classList.remove('active'));
   calcMortgage();
 }
+function getMortCurrency(){
+  const sel = document.getElementById('mortCurrency');
+  return sel ? sel.value : 'som';
+}
 function onMortPriceInput(){
   const input = document.getElementById('mortPrice');
   let val = parseFloat(input.value.replace(/\s/g,''))||0;
   if(val<0) val=0;
-  document.getElementById('mortPriceVal').textContent = fmt(val)+' сом';
+  const cur = getMortCurrency();
+  const som = parsePriceToSom(val, cur);
+  const usd = somToUsd(som);
+  if(cur === 'usd'){
+    document.getElementById('mortPriceVal').textContent = fmt(val)+' $ (≈ '+fmt(som)+' сом)';
+  } else {
+    document.getElementById('mortPriceVal').textContent = fmt(val)+' сом (≈ '+fmt(usd)+' $)';
+  }
   calcMortgage();
 }
+function onMortCurrencyChange(){
+  // Арзишро иваз кун
+  const input = document.getElementById('mortPrice');
+  const cur = getMortCurrency();
+  const oldVal = parseFloat(input.value)||0;
+  // Агар аз сомонӣ ба доллар
+  if(cur === 'usd'){
+    input.value = oldVal > 0 ? somToUsd(oldVal) : '';
+    document.getElementById('mortPriceLabel').textContent = 'Нархи хона ($)';
+  } else {
+    input.value = oldVal > 0 ? usdToSom(oldVal) : '';
+    document.getElementById('mortPriceLabel').textContent = 'Нархи хона (сомонӣ)';
+  }
+  onMortPriceInput();
+}
 function getRate(months){
-  const minM=6,maxM=120,minR=9.5,maxR=21;
-  if(months<=minM) return minR;
-  if(months>=maxM) return maxR;
-  return minR+(months-minM)/(maxM-minM)*(maxR-minR);
+  return 21; // Фоиз ҳамеша 21% — новобаста аз муддат
 }
 function calcMortgage(){
-  const priceInput=document.getElementById('mortPrice');
-  const price = parseFloat(priceInput.value.replace(/\s/g,''))||0;
+  const priceInput = document.getElementById('mortPrice');
+  const cur = getMortCurrency();
+  const rawVal = parseFloat(String(priceInput.value).replace(/\s/g,''))||0;
+  // Ҳамаи ҳисоб бо сомонӣ мегузарад
+  const price = parsePriceToSom(rawVal, cur);
   const months = parseInt(document.getElementById('mortTerm').value)||60;
-  const rate = getRate(months);
+  const rate = getRate(months); // доимо 21%
   const down = price*(downPct/100);
   const loan = price-down;
   const r = rate/100/12;
@@ -296,48 +341,78 @@ function calcMortgage(){
   const totalPay = monthly*months;
   const totalInt = totalPay-loan;
 
-  document.getElementById('mortPriceVal').textContent = fmt(price)+' сом';
-  const tLabel = months<12?months+' моҳ':months===12?'1 сол':(months/12)%1===0?(months/12)+' сол':(months/12).toFixed(1)+' сол';
-  document.getElementById('mortTermVal').textContent = tLabel;
+  // Нишондодани нарх (бо ду валюта)
+  const priceValEl = document.getElementById('mortPriceVal');
+  if(priceValEl){
+    if(cur==='usd'){
+      priceValEl.textContent = fmt(rawVal)+' $ (≈ '+fmt(price)+' сом)';
+    } else {
+      priceValEl.textContent = fmt(rawVal)+' сом (≈ '+fmt(somToUsd(rawVal))+' $)';
+    }
+  }
 
-  const ratePct = (rate-9.5)/(21-9.5)*100;
-  document.getElementById('rateFill').style.width = ratePct+'%';
-  document.getElementById('currentRateLabel').textContent = rate.toFixed(2)+'%';
+  const tLabel = months<12 ? months+' моҳ' : months===12 ? '1 сол' : (months/12)%1===0 ? (months/12)+' сол' : (months/12).toFixed(1)+' сол';
+  const termEl = document.getElementById('mortTermVal');
+  if(termEl) termEl.textContent = tLabel;
 
-  document.getElementById('rPrice').textContent = fmt(price)+' сомон';
-  document.getElementById('rDown').textContent = fmt(Math.round(down))+' сомон ('+downPct+'%)';
-  document.getElementById('rLoan').textContent = fmt(Math.round(loan))+' сом';
-  document.getElementById('rRate').textContent = rate.toFixed(2)+'% солона';
-  document.getElementById('rTerm').textContent = tLabel;
-  document.getElementById('rMonthly').textContent = fmt(Math.round(monthly))+' сомон';
-  document.getElementById('rTotalInterest').textContent = fmt(Math.round(totalInt))+' сомон';
-  document.getElementById('rTotal').textContent = fmt(Math.round(totalPay))+' сомон';
+  // Фоиз ҳамеша 21% — indicator пур
+  const rateFillEl = document.getElementById('rateFill');
+  if(rateFillEl) rateFillEl.style.width = '100%';
+  const rateLabelEl = document.getElementById('currentRateLabel');
+  if(rateLabelEl) rateLabelEl.textContent = '21%';
+
+  // Натиҷаҳо — сомонӣ + доллар
+  const fmtBoth = (n) => `${fmt(Math.round(n))} сом <small style="color:var(--text-dim);font-size:0.75em;">(≈ ${fmt(somToUsd(Math.round(n)))} $)</small>`;
+
+  const rPriceEl = document.getElementById('rPrice');
+  if(rPriceEl) rPriceEl.innerHTML = fmtBoth(price);
+  const rDownEl = document.getElementById('rDown');
+  if(rDownEl) rDownEl.innerHTML = fmtBoth(down)+` <small>(${downPct}%)</small>`;
+  const rLoanEl = document.getElementById('rLoan');
+  if(rLoanEl) rLoanEl.innerHTML = fmtBoth(loan);
+  const rRateEl = document.getElementById('rRate');
+  if(rRateEl) rRateEl.textContent = rate.toFixed(0)+'% солона (доимӣ)';
+  const rTermEl = document.getElementById('rTerm');
+  if(rTermEl) rTermEl.textContent = tLabel;
+  const rMonthlyEl = document.getElementById('rMonthly');
+  if(rMonthlyEl) rMonthlyEl.innerHTML = fmtBoth(monthly);
+  const rTotalIntEl = document.getElementById('rTotalInterest');
+  if(rTotalIntEl) rTotalIntEl.innerHTML = fmtBoth(totalInt);
+  const rTotalEl = document.getElementById('rTotal');
+  if(rTotalEl) rTotalEl.innerHTML = fmtBoth(totalPay);
 }
 function openMortgageContact(){
-  const price=parseFloat(document.getElementById('mortPrice').value.replace(/\s/g,''))||0;
-  const months=parseInt(document.getElementById('mortTerm').value)||60;
-  const rate=getRate(months);
-  const down=price*(downPct/100);
-  const loan=price-down;
-  const r=rate/100/12;
-  const monthly=loan>0?Math.round(loan*(r*Math.pow(1+r,months))/(Math.pow(1+r,months)-1)):0;
-  const tLabel=months<12?months+' моҳ':(months/12).toFixed(1)+' сол';
+  const cur = getMortCurrency();
+  const rawVal = parseFloat(String(document.getElementById('mortPrice').value).replace(/\s/g,''))||0;
+  const price = parsePriceToSom(rawVal, cur);
+  const months = parseInt(document.getElementById('mortTerm').value)||60;
+  const rate = getRate(months);
+  const down = price*(downPct/100);
+  const loan = price-down;
+  const r = rate/100/12;
+  const monthly = loan>0 ? Math.round(loan*(r*Math.pow(1+r,months))/(Math.pow(1+r,months)-1)) : 0;
+  const tLabel = months<12 ? months+' моҳ' : (months/12).toFixed(1)+' сол';
   document.getElementById('mortContactInfo').innerHTML =
-    `Маълумоти ҳисоби шумо:<br/>💰 Нарх: ${fmt(price)} сомон · Пешпардохт: ${downPct}%<br/>📅 Муддат: ${tLabel} · Фоиз: ${rate.toFixed(2)}%<br/>💳 Пардохти моҳона: <strong style="color:var(--gold)">${fmt(monthly)} сомон</strong>`;
+    `Маълумоти ҳисоби шумо:<br/>
+     💰 Нарх: ${fmt(price)} сом (≈ ${fmt(somToUsd(price))} $) · Пешпардохт: ${downPct}%<br/>
+     📅 Муддат: ${tLabel} · Фоиз: <strong style="color:var(--gold)">${rate}%</strong> (доимӣ)<br/>
+     💳 Пардохти моҳона: <strong style="color:var(--gold)">${fmt(monthly)} сом (≈ ${fmt(somToUsd(monthly))} $)</strong>`;
   openModal('mortContactModal');
 }
 function sendMortContact(ch){
   const n=v('mc-name'), ph=v('mc-phone');
   if(!n||!ph){ showToast('Ном ва телефонро ворид кунед!'); return; }
-  const price=parseFloat(document.getElementById('mortPrice').value.replace(/\s/g,''))||0;
-  const months=parseInt(document.getElementById('mortTerm').value)||60;
-  const rate=getRate(months);
-  const down=price*(downPct/100);
-  const loan=price-down;
-  const r=rate/100/12;
-  const monthly=loan>0?Math.round(loan*(r*Math.pow(1+r,months))/(Math.pow(1+r,months)-1)):0;
-  const tLabel=months<12?months+' моҳ':(months/12).toFixed(1)+' сол';
-  const msg=`📊 Маслиҳати Ипотека\n👤 ${n}\n📞 ${ph}\n💰 Нарх: ${fmt(price)} сомон\n⬇️ Пешпардохт: ${downPct}% (${fmt(Math.round(down))} сом)\n📅 Муддат: ${tLabel}\n📈 Фоиз: ${rate.toFixed(2)}%\n💳 Моҳона: ${fmt(monthly)} сомон`;
+  const cur = getMortCurrency();
+  const rawVal = parseFloat(String(document.getElementById('mortPrice').value).replace(/\s/g,''))||0;
+  const price = parsePriceToSom(rawVal, cur);
+  const months = parseInt(document.getElementById('mortTerm').value)||60;
+  const rate = getRate(months);
+  const down = price*(downPct/100);
+  const loan = price-down;
+  const r = rate/100/12;
+  const monthly = loan>0 ? Math.round(loan*(r*Math.pow(1+r,months))/(Math.pow(1+r,months)-1)) : 0;
+  const tLabel = months<12 ? months+' моҳ' : (months/12).toFixed(1)+' сол';
+  const msg = `📊 Маслиҳати Ипотека\n👤 ${n}\n📞 ${ph}\n💰 Нарх: ${fmt(price)} сом (≈ ${fmt(somToUsd(price))} $)\n⬇️ Пешпардохт: ${downPct}% (${fmt(Math.round(down))} сом)\n📅 Муддат: ${tLabel}\n📈 Фоиз: ${rate}% (доимӣ)\n💳 Моҳона: ${fmt(monthly)} сом (≈ ${fmt(somToUsd(monthly))} $)`;
   if(ch==='wa') openWA(msg); else openTG(msg);
   closeModal('mortContactModal');
   showToast('Хуб! Мо ба зудӣ тамос мегирем ✓');
