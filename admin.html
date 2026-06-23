@@ -106,7 +106,21 @@
             </div>
             <div class="form-row"><label>Ноҳия</label><input type="text" id="ap-district" placeholder="Ноҳияи Сино"/></div>
             <div class="form-row"><label>Суроға</label><input type="text" id="ap-address" placeholder="Кӯчаи Рӯдакӣ 25"/></div>
-            <div class="form-row"><label>Нарх (сомонӣ)</label><input type="number" id="ap-price" placeholder="350000"/></div>
+            <div class="form-row">
+              <label id="ap-price-label">Нарх</label>
+              <div style="display:flex;gap:8px;align-items:center;">
+                <input type="number" id="ap-price" placeholder="350000" style="flex:1;" oninput="updateAdminPriceHint()"/>
+                <select id="ap-price-currency" onchange="onAdminCurrencyChange()" style="
+                  padding:10px 8px;border-radius:8px;border:1px solid var(--border);
+                  background:var(--card-bg,#0d1e35);color:var(--gold);
+                  font-weight:700;font-size:0.85rem;cursor:pointer;min-width:90px;
+                ">
+                  <option value="som">🇹🇯 Сом</option>
+                  <option value="usd">🇺🇸 USD $</option>
+                </select>
+              </div>
+              <div id="ap-price-hint" style="font-size:0.73rem;color:var(--text-dim);margin-top:4px;"></div>
+            </div>
             <div class="form-row"><label>Намуди манзил</label>
               <select id="ap-kind"><option>Квартира</option><option>Хонаи алоҳида</option><option>Коттедж</option><option>Офис</option><option>Студия</option></select>
             </div>
@@ -292,6 +306,9 @@ function startEdit(id){
   document.getElementById('ap-district').value = p.district||'';
   document.getElementById('ap-address').value = p.address||'';
   document.getElementById('ap-price').value = p.price||'';
+  document.getElementById('ap-price-currency').value = 'som';
+  document.getElementById('ap-price-label').textContent = 'Нарх (сомонӣ)';
+  updateAdminPriceHint();
   document.getElementById('ap-kind').value = p.kind||'Квартира';
   document.getElementById('ap-floor').value = p.floor||'';
   document.getElementById('ap-area').value = p.area||'';
@@ -377,10 +394,42 @@ async function uploadPendingMedia(){
   return uploaded;
 }
 
+// ── ADMIN CURRENCY HELPERS ──
+function updateAdminPriceHint(){
+  const val = parseFloat(document.getElementById('ap-price').value)||0;
+  const cur = document.getElementById('ap-price-currency').value;
+  const hint = document.getElementById('ap-price-hint');
+  if(!hint || !val) { if(hint) hint.textContent=''; return; }
+  if(cur === 'usd'){
+    hint.textContent = '≈ '+fmt(usdToSom(val))+' сомонӣ';
+  } else {
+    hint.textContent = '≈ '+fmt(somToUsd(val))+' USD ($)';
+  }
+}
+function onAdminCurrencyChange(){
+  const cur = document.getElementById('ap-price-currency').value;
+  const label = document.getElementById('ap-price-label');
+  if(label) label.textContent = cur==='usd' ? 'Нарх (USD $)' : 'Нарх (сомонӣ)';
+  const val = parseFloat(document.getElementById('ap-price').value)||0;
+  if(val > 0){
+    // Арзишро табдил деҳ
+    if(cur==='usd'){
+      document.getElementById('ap-price').value = somToUsd(val);
+    } else {
+      document.getElementById('ap-price').value = usdToSom(val);
+    }
+  }
+  updateAdminPriceHint();
+}
+
 // ── ADD / SAVE PROPERTY ──
 async function submitProperty(){
   const name=v('ap-name'), type=v('ap-type'), district=v('ap-district'), address=v('ap-address');
-  const price=parseFloat(v('ap-price'))||0, kind=v('ap-kind'), floor=v('ap-floor');
+  const rawPrice=parseFloat(v('ap-price'))||0;
+  const priceCur = document.getElementById('ap-price-currency').value;
+  // Ҳамеша ба сомонӣ табдил деҳ барои Firestore
+  const price = parsePriceToSom(rawPrice, priceCur);
+  const kind=v('ap-kind'), floor=v('ap-floor');
   const area=parseFloat(v('ap-area'))||0, rooms=parseInt(v('ap-rooms'))||1, status=v('ap-status');
   const desc=v('ap-desc'), vip=document.getElementById('ap-vip').checked;
   const lat=_pickedLat, lng=_pickedLng;
