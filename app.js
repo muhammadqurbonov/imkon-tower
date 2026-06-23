@@ -11,7 +11,71 @@ let activeSearch = { type:'', district:'', pmin:0, pmax:0, rooms:0, area:0 };
 let unsubscribeProperties = null;
 
 // ── FORMAT HELPERS ──
-const USD_RATE = 10.9; // 1 USD = 10.9 сомонӣ (курси тахминӣ)
+// Курси зинда аз API (бепул, калид лозим нест)
+let USD_RATE = 10.9;        // пешфарз то курс бор шавад
+let USD_RATE_DATE = '';     // санаи курс
+let _rateLoaded = false;
+
+async function fetchUsdRate(){
+  const CACHE_KEY = 'it_usd_rate';
+  const CACHE_DATE_KEY = 'it_usd_rate_date';
+  const today = new Date().toISOString().slice(0,10);
+
+  // Агар имрӯз кэш дошта бошем — аз кэш бигир
+  const cachedDate = localStorage.getItem(CACHE_DATE_KEY);
+  const cachedRate = localStorage.getItem(CACHE_KEY);
+  if(cachedDate === today && cachedRate){
+    USD_RATE = parseFloat(cachedRate);
+    USD_RATE_DATE = today;
+    _rateLoaded = true;
+    _onRateLoaded();
+    return;
+  }
+
+  // URL-и асосӣ + zapasny (backup)
+  const urls = [
+    'https://cdn.jsdelivr.net/npm/@fawazahmed0/currency-api@latest/v1/currencies/usd.min.json',
+    'https://latest.currency-api.pages.dev/v1/currencies/usd.min.json'
+  ];
+
+  for(const url of urls){
+    try{
+      const res = await fetch(url);
+      if(!res.ok) continue;
+      const data = await res.json();
+      const rate = data?.usd?.tjs;
+      if(rate && rate > 0){
+        USD_RATE = parseFloat(rate.toFixed(4));
+        USD_RATE_DATE = data.date || today;
+        localStorage.setItem(CACHE_KEY, USD_RATE);
+        localStorage.setItem(CACHE_DATE_KEY, today);
+        _rateLoaded = true;
+        _onRateLoaded();
+        return;
+      }
+    } catch(e){ /* keyingi URL-ро sinash */ }
+  }
+  // Агар ҳарду нокомӣ хӯрд — пешфарзро нигоҳ дор
+  _rateLoaded = true;
+  _onRateLoaded();
+}
+
+// Баъд аз бор шудани курс интерфейсро навсоз кун
+function _onRateLoaded(){
+  // Нишондиҳандаи курсро дар ҳама ҷо навсоз кун
+  document.querySelectorAll('.usd-rate-display').forEach(el=>{
+    el.textContent = `1 $ = ${fmt(USD_RATE)} сом`;
+  });
+  document.querySelectorAll('.usd-rate-date').forEach(el=>{
+    el.textContent = USD_RATE_DATE;
+  });
+  // Агар калкулятор кушода бошад — азнав ҳисоб кун
+  const mortPrice = document.getElementById('mortPrice');
+  if(mortPrice) calcMortgage();
+  // Корточкаҳоро аз нав render кун (барои нархи доллар)
+  if(properties.length > 0) renderCards(currentFilter);
+}
+
 function fmt(n){ return Number(n||0).toLocaleString('ru-RU'); }
 function somToUsd(n){ return Math.round(n / USD_RATE); }
 function usdToSom(n){ return Math.round(n * USD_RATE); }
@@ -36,6 +100,9 @@ function parsePriceToSom(val, currency){
 function somToCurrency(som, currency){
   return currency === 'usd' ? somToUsd(som) : som;
 }
+
+// Курсро фавран бор кун
+fetchUsdRate();
 function v(id){ const e=document.getElementById(id); return e? e.value.trim() : ''; }
 function emojiFor(kind){
   const map={'Квартира':'🏢','Хонаи алоҳида':'🏠','Коттедж':'🏡','Офис':'🏬','Студия':'🏢'};
