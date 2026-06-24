@@ -5,6 +5,12 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
 <title>Панели Админ — Imkon Tower</title>
 <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet"/>
+<link rel="manifest" href="manifest.json"/>
+<meta name="theme-color" content="#C9A84C"/>
+<meta name="apple-mobile-web-app-capable" content="yes"/>
+<meta name="apple-mobile-web-app-title" content="Imkon Tower"/>
+<link rel="apple-touch-icon" href="icons/icon-192.png"/>
+<link rel="icon" type="image/png" sizes="192x192" href="icons/icon-192.png"/>
 <link rel="stylesheet" href="style.css"/>
 </head>
 <body data-theme="dark">
@@ -107,24 +113,8 @@
             <div class="form-row"><label>Ноҳия</label><input type="text" id="ap-district" placeholder="Ноҳияи Сино"/></div>
             <div class="form-row"><label>Суроға</label><input type="text" id="ap-address" placeholder="Кӯчаи Рӯдакӣ 25"/></div>
             <div class="form-row">
-              <label id="ap-price-label">Нарх</label>
-              <input type="number" id="ap-price" placeholder="350000" oninput="updateAdminPriceHint()" style="width:100%;box-sizing:border-box;"/>
-              <div style="margin-top:6px;display:flex;align-items:center;gap:8px;flex-wrap:wrap;">
-                <span style="font-size:0.8rem;color:var(--text-dim);">Валюта:</span>
-                <label style="display:flex;align-items:center;gap:4px;cursor:pointer;font-size:0.85rem;">
-                  <input type="radio" name="ap-price-cur" id="ap-cur-som" value="som" checked onchange="onAdminCurrencyChange()"/>
-                  🇹🇯 Сомонӣ
-                </label>
-                <label style="display:flex;align-items:center;gap:4px;cursor:pointer;font-size:0.85rem;">
-                  <input type="radio" name="ap-price-cur" id="ap-cur-usd" value="usd" onchange="onAdminCurrencyChange()"/>
-                  🇺🇸 USD $
-                </label>
-              </div>
-              <div id="ap-price-hint" style="font-size:0.78rem;color:var(--gold);margin-top:4px;font-weight:600;"></div>
-              <div style="font-size:0.71rem;color:var(--text-dim);margin-top:2px;">
-                💱 Курси имрӯз: <strong class="usd-rate-display" style="color:var(--gold);">бор шудан...</strong>
-                <span class="usd-rate-date"></span>
-              </div>
+              <label>Нарх (сомонӣ)</label>
+              <input type="number" id="ap-price" placeholder="350000" style="width:100%;box-sizing:border-box;"/>
             </div>
             <div class="form-row"><label>Намуди манзил</label>
               <select id="ap-kind"><option>Квартира</option><option>Хонаи алоҳида</option><option>Коттедж</option><option>Офис</option><option>Студия</option></select>
@@ -311,9 +301,6 @@ function startEdit(id){
   document.getElementById('ap-district').value = p.district||'';
   document.getElementById('ap-address').value = p.address||'';
   document.getElementById('ap-price').value = p.price||'';
-  document.getElementById('ap-cur-som').checked = true;
-  document.getElementById('ap-price-label').textContent = 'Нарх (сомонӣ)';
-  updateAdminPriceHint();
   document.getElementById('ap-kind').value = p.kind||'Квартира';
   document.getElementById('ap-floor').value = p.floor||'';
   document.getElementById('ap-area').value = p.area||'';
@@ -399,44 +386,10 @@ async function uploadPendingMedia(){
   return uploaded;
 }
 
-// ── ADMIN CURRENCY HELPERS ──
-function getAdminCurrency(){
-  const r = document.querySelector('input[name="ap-price-cur"]:checked');
-  return r ? r.value : 'som';
-}
-function updateAdminPriceHint(){
-  const val = parseFloat(document.getElementById('ap-price').value)||0;
-  const cur = getAdminCurrency();
-  const hint = document.getElementById('ap-price-hint');
-  if(!hint || !val){ if(hint) hint.textContent=''; return; }
-  if(cur === 'usd'){
-    hint.textContent = '≈ '+fmt(usdToSom(val))+' сомонӣ';
-  } else {
-    hint.textContent = '≈ '+fmt(somToUsd(val))+' USD ($)';
-  }
-}
-function onAdminCurrencyChange(){
-  const cur = getAdminCurrency();
-  const label = document.getElementById('ap-price-label');
-  if(label) label.textContent = cur==='usd' ? 'Нарх (USD $)' : 'Нарх (сомонӣ)';
-  const val = parseFloat(document.getElementById('ap-price').value)||0;
-  if(val > 0){
-    if(cur==='usd'){
-      document.getElementById('ap-price').value = somToUsd(val);
-    } else {
-      document.getElementById('ap-price').value = usdToSom(val);
-    }
-  }
-  updateAdminPriceHint();
-}
-
 // ── ADD / SAVE PROPERTY ──
 async function submitProperty(){
   const name=v('ap-name'), type=v('ap-type'), district=v('ap-district'), address=v('ap-address');
-  const rawPrice=parseFloat(v('ap-price'))||0;
-  const priceCur = getAdminCurrency();
-  // Ҳамеша ба сомонӣ табдил деҳ барои Firestore
-  const price = parsePriceToSom(rawPrice, priceCur);
+  const price=parseFloat(v('ap-price'))||0;
   const kind=v('ap-kind'), floor=v('ap-floor');
   const area=parseFloat(v('ap-area'))||0, rooms=parseInt(v('ap-rooms'))||1, status=v('ap-status');
   const desc=v('ap-desc'), vip=document.getElementById('ap-vip').checked;
