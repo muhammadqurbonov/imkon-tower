@@ -174,7 +174,7 @@ function showSearchResults(results){
 
   if(!results || results.length === 0){
     box.style.display = 'block';
-    box.innerHTML = `<div style="padding:12px 16px;color:var(--text-dim,#8a9bb0);font-size:0.83rem;">Ёфт нашуд. Дигар навис кун.</div>`;
+    box.innerHTML = `<div style="padding:12px 16px;color:var(--text-dim,#8a9bb0);font-size:0.83rem;">Ёфт нашуд.</div>`;
     return;
   }
 
