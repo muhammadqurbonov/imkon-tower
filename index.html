@@ -4,6 +4,25 @@
 <meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
 <title>Imkon Tower — Хариду Фурӯши Хонаҳо</title>
+
+<!-- PWA -->
+<link rel="manifest" href="manifest.json"/>
+<meta name="theme-color" content="#C9A84C"/>
+<meta name="mobile-web-app-capable" content="yes"/>
+<meta name="apple-mobile-web-app-capable" content="yes"/>
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent"/>
+<meta name="apple-mobile-web-app-title" content="Imkon Tower"/>
+<link rel="apple-touch-icon" href="icons/icon-192.png"/>
+<link rel="apple-touch-icon" sizes="152x152" href="icons/icon-152.png"/>
+<link rel="apple-touch-icon" sizes="144x144" href="icons/icon-144.png"/>
+<link rel="apple-touch-icon" sizes="128x128" href="icons/icon-128.png"/>
+<link rel="icon" type="image/png" sizes="192x192" href="icons/icon-192.png"/>
+<link rel="icon" type="image/png" sizes="96x96" href="icons/icon-96.png"/>
+
+<!-- SEO -->
+<meta name="description" content="Хариду фурӯш ва иҷораи манзил дар Душанбе — Imkon Tower. Беҳтарин объектҳо бо нархи одилона."/>
+<meta name="keywords" content="хона, квартира, Душанбе, Тоҷикистон, иҷора, фурӯш, ипотека"/>
+
 <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet"/>
 <link rel="stylesheet" href="style.css"/>
 </head>
@@ -79,8 +98,9 @@
       <label>Ноҳия</label>
       <select id="sf-district">
         <option value="">Ҳамаи ноҳияҳо</option>
-        <option>Ноҳияи Исмоили Сомонӣ</option><option>Ноҳияи Шоҳмансур</option>
-        <option>Маркази шаҳр</option><option>Ноҳияи Сино</option>
+        <option>Ноҳияи Исмоили Сомонӣ</option>
+        <option>Ноҳияи Шоҳмансур</option>
+        <option>Ноҳияи Сино</option>
         <option>Ноҳияи Фирдавсӣ</option>
       </select>
     </div>
@@ -168,21 +188,7 @@
 
       <div class="range-row">
         <label id="mortPriceLabel">Нархи хона (сомонӣ) <span id="mortPriceVal">300,000 сом</span></label>
-        <div class="price-input-row" style="display:flex;gap:8px;align-items:center;">
-          <input type="number" id="mortPrice" min="0" step="1000" value="300000" oninput="onMortPriceInput()" placeholder="Нархро дастӣ ворид кун" style="flex:1;"/>
-          <select id="mortCurrency" onchange="onMortCurrencyChange()" style="
-            padding:10px 10px;border-radius:8px;border:1px solid var(--border);
-            background:var(--input-bg,#0d1e35);color:var(--gold);
-            font-weight:700;font-size:0.88rem;cursor:pointer;min-width:90px;
-          ">
-            <option value="som">🇹🇯 Сом</option>
-            <option value="usd">🇺🇸 USD $</option>
-          </select>
-        </div>
-        <div style="font-size:0.76rem;color:var(--text-dim);margin-top:4px;display:flex;align-items:center;gap:6px;">
-          💱 Курси имрӯз: <strong style="color:var(--gold);" class="usd-rate-display">бор шудан...</strong>
-          <span style="color:var(--text-dim);font-size:0.7rem;">(<span class="usd-rate-date"></span>)</span>
-        </div>
+        <input type="number" id="mortPrice" min="0" step="1000" value="300000" oninput="onMortPriceInput()" placeholder="Нархро дастӣ ворид кун"/>
       </div>
 
       <div class="range-row" style="margin-bottom:10px;">
@@ -246,7 +252,7 @@
   <div class="steps-row">
     <div class="step"><div class="step-num">1</div><h4>Интихоб кун</h4><p>Аз рӯйхат ё ҷустуҷӯ хонаи дилхоҳро ёб.</p></div>
     <div class="step"><div class="step-num">2</div><h4>Тамос гир</h4><p>Тавассути WhatsApp ё Telegram бо мо фавран тамос гир.</p></div>
-    <div class="step"><div class="step-num">3</div><h4>Дидан рав</h4><p>Мо бозрасии хонаро ташкил мекунем — ройгон.</p></div>
+    <div class="step"><div class="step-num">3</div><h4>Дидан рав</h4><p>Мо базрасии хонаро ташкил мекунем — ройгон.</p></div>
     <div class="step"><div class="step-num">4</div><h4>Шартнома баст</h4><p>Санадҳоро тартиб медиҳем ва калидро мегирӣ.</p></div>
   </div>
 </section>
@@ -466,6 +472,17 @@ listenProperties(()=>{
   renderCards(currentFilter);
   hidePageLoader();
 });
+</script>
+
+<!-- ═══ SERVICE WORKER РЕГИСТРАТСИЯ ═══ -->
+<script>
+if('serviceWorker' in navigator){
+  window.addEventListener('load', ()=>{
+    navigator.serviceWorker.register('sw.js')
+      .then(reg => console.log('✅ SW registered:', reg.scope))
+      .catch(err => console.warn('SW registration failed:', err));
+  });
+}
 </script>
 </body>
 </html>
