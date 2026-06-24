@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-<title>Маълумот дар бораи хона — Imkon Tower</title>
+<title>Маълумоти хона — Imkon Tower</title>
 <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet"/>
 <link rel="manifest" href="manifest.json"/>
 <meta name="theme-color" content="#C9A84C"/>
@@ -232,26 +232,45 @@ function renderDetail(p){
 function loadDetailPage(){
   const id = getParam('id');
   if(!id){ showNotFound(); return; }
-  db.collection('properties').doc(id).get().then(doc=>{
-    if(!doc.exists){ showNotFound(); return; }
-    const p = { id: doc.id, ...doc.data() };
-    db.collection('properties').doc(id).update({ views: (p.views||0)+1 }).catch(()=>{});
-    document.getElementById('detailContent').style.display='block';
-    document.getElementById('notFoundBox').style.display='none';
-    renderDetail(p);
-    hidePageLoader();
-  }).catch(err=>{
-    console.error(err);
-    showNotFound();
-  });
+
+  // Бевосита аз Firestore — бе listenProperties
+  db.collection('properties').doc(id).get()
+    .then(doc=>{
+      if(!doc.exists){ showNotFound(); return; }
+      const p = { id: doc.id, ...doc.data() };
+
+      // Дидашуданро +1 кун (хатогиро нодида гир)
+      db.collection('properties').doc(id)
+        .update({ views: firebase.firestore.FieldValue.increment(1) })
+        .catch(()=>{});
+
+      // Объектҳои монандро бор кун
+      db.collection('properties').limit(20).get()
+        .then(snap=>{
+          properties = snap.docs.map(d=>({ id: d.id, ...d.data() }));
+        })
+        .catch(()=>{ properties = []; })
+        .finally(()=>{
+          document.getElementById('detailContent').style.display='block';
+          document.getElementById('notFoundBox').style.display='none';
+          renderDetail(p);
+          hidePageLoader();
+        });
+    })
+    .catch(err=>{
+      console.error('Firestore хатогӣ:', err);
+      showNotFound();
+    });
 }
+
 function showNotFound(){
   document.getElementById('detailContent').style.display='none';
   document.getElementById('notFoundBox').style.display='block';
   hidePageLoader();
 }
 
-listenProperties(()=>{ loadDetailPage(); });
+// property.html-да listenProperties лозим нест — бевосита бор кун
+loadDetailPage();
 if("serviceWorker" in navigator){ navigator.serviceWorker.register("sw.js").catch(()=>{}); }
 </script>
 </body>
