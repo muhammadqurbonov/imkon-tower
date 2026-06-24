@@ -78,7 +78,7 @@ function initAdminMiniMap(onPick, initLat, initLng){
           background:linear-gradient(135deg,#C9A84C,#E8C96A);
           color:#0A1628; font-weight:600; font-size:0.85rem; white-space:nowrap;
         "
-      >Ёб кун</button>
+      >Поиск</button>
     `;
     el.parentNode.insertBefore(searchWrap, el);
 
@@ -164,7 +164,7 @@ async function searchAddress(){
     console.error('Поиск хатогӣ:', err);
     showToast('Поиск кор накард. Интернетро санҷед.');
   } finally {
-    if(btn){ btn.textContent = 'Ёб кун'; btn.disabled = false; }
+    if(btn){ btn.textContent = 'Поиск'; btn.disabled = false; }
   }
 }
 
