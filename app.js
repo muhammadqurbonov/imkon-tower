@@ -23,7 +23,7 @@ function parsePriceToSom(val){
 }
 function v(id){ const e=document.getElementById(id); return e? e.value.trim() : ''; }
 function emojiFor(kind){
-  const map={'Квартира':'🏢','Хонаи алоҳида':'🏠','Коттедж':'🏡','Офис':'🏬','Студия':'🏢'};
+  const map={'Квартира':'🏢','Хонаи ҳавлигӣ':'🏠','Котедж':'🏡','Офис':'🏬','Студия':'🏢'};
   return map[kind]||'🏠';
 }
 
@@ -153,7 +153,7 @@ function propertyCardHTML(p){
         <div class="card-specs">
           <span class="spec">🛏 ${p.rooms} хона</span>
           <span class="spec">📐 ${p.area} м²</span>
-          <span class="spec">🏗 ${escapeHtml(p.floor||'—')} ош.</span>
+          <span class="spec">🏗 ${escapeHtml(p.floor||'—')} ...</span>
         </div>
         <div class="card-footer">
           <div class="card-price">${formatPrice(p.price,p.type)}<small>${p.type==='rent'?'дар моҳ':'нарх'}</small></div>
@@ -239,7 +239,7 @@ function updateCompareBar(){
 }
 function clearCompare(){ compareList=[]; updateCompareBar(); }
 function openCompare(){
-  if(compareList.length<2){ showToast('Ҳадди ақал 2 объект интихоб кун'); return; }
+  if(compareList.length<2){ showToast('Ҳадди ақал 2 объект интихоб кунед'); return; }
   const ps=compareList.map(id=>properties.find(x=>x.id===id)).filter(Boolean);
   const fields=[
     {label:'Ном',key:p=>p.name},
@@ -365,27 +365,27 @@ function openTG(msg){ window.open(`https://t.me/${CONTACT.telegram}?text=${encod
 function buildMsg(label,n,ph,a,k,pr,m){ return `${label}\n👤 ${n||'—'}\n📞 ${ph||'—'}\n📍 ${a||'—'}\n🏠 ${k||'—'}\n💰 ${pr||'—'}\n📝 ${m||'—'}`; }
 function sendModalToWA(pfx,label){
   const n=v(pfx+'-name'),ph=v(pfx+'-phone'),a=v(pfx+'-addr'),k=v(pfx+'-kind'),pr=v(pfx+'-price'),m=v(pfx+'-msg');
-  if(!n||!ph){ showToast('Ном ва телефонро ворид кун!'); return; }
+  if(!n||!ph){ showToast('Ном ва телефонро ворид кунед!'); return; }
   openWA(buildMsg('📢 Эълон: '+label,n,ph,a,k,pr+' сом',m));
   closeModal(pfx==='sm'?'sellModal':'rentOutModal');
   showToast('WhatsApp кушода шуд ✓');
 }
 function sendModalToTG(pfx,label){
   const n=v(pfx+'-name'),ph=v(pfx+'-phone'),a=v(pfx+'-addr'),k=v(pfx+'-kind'),pr=v(pfx+'-price'),m=v(pfx+'-msg');
-  if(!n||!ph){ showToast('Ном ва телефонро ворид кун!'); return; }
+  if(!n||!ph){ showToast('Ном ва телефонро ворид кунед!'); return; }
   openTG(buildMsg('📢 Эълон: '+label,n,ph,a,k,pr+' сом',m));
   closeModal(pfx==='sm'?'sellModal':'rentOutModal');
   showToast('Telegram кушода шуд ✓');
 }
 function sendToWA(pfx){
   const n=v(pfx+'-name'),ph=v(pfx+'-phone'),tp=v(pfx+'-type'),m=v(pfx+'-msg');
-  if(!n||!ph){ showToast('Ном ва телефонро ворид кун!'); return; }
+  if(!n||!ph){ showToast('Ном ва телефонро ворид кунед!'); return; }
   openWA('📢 Дархост\n👤 '+n+'\n📞 '+ph+'\n🏠 '+tp+'\n📝 '+m);
   showToast('WhatsApp кушода шуд ✓');
 }
 function sendToTG(pfx){
   const n=v(pfx+'-name'),ph=v(pfx+'-phone'),tp=v(pfx+'-type'),m=v(pfx+'-msg');
-  if(!n||!ph){ showToast('Ном ва телефонро ворид кун!'); return; }
+  if(!n||!ph){ showToast('Ном ва телефонро ворид кунед!'); return; }
   openTG('📢 Дархост\n👤 '+n+'\n📞 '+ph+'\n🏠 '+tp+'\n📝 '+m);
   showToast('Telegram кушода шуд ✓');
 }
