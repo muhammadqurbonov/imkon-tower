@@ -26,7 +26,7 @@
         <polygon points="13,2 13,6 9,10 17,10" fill="#0A1628"/>
       </svg>
     </div>
-    <h2>Панели Админ</h2>
+    <h2>Админ Панел</h2>
     <p>Вориди ҳисоби худ шав</p>
     <div class="form-row"><label>Email</label><input type="email" id="loginUser" placeholder="admin@imkontower.tj"/></div>
     <div class="form-row"><label>Парол</label><input type="password" id="loginPass" placeholder="••••••" onkeydown="if(event.key==='Enter')doLogin()"/></div>
@@ -55,7 +55,7 @@
     </div>
     <div style="display:flex;gap:8px;">
       <a href="index.html" class="btn-outline">← Ба сайт</a>
-      <button class="btn-gold" onclick="showAdminPage('addProperty')">+ Хона иловакун</button>
+      <button class="btn-gold" onclick="showAdminPage('addProperty')">+ Илова кардан</button>
       <button class="btn-outline" onclick="doLogout()">Баромад</button>
     </div>
   </div>
@@ -64,7 +64,7 @@
       <ul>
         <li><a class="active" onclick="showAdminPage('dashboard',this)">📊 Dashboard</a></li>
         <li><a onclick="showAdminPage('properties',this)">🏠 Хонаҳо</a></li>
-        <li><a onclick="showAdminPage('addProperty',this)">➕ Хона иловакун</a></li>
+        <li><a onclick="showAdminPage('addProperty',this)">➕ Илова кардан</a></li>
         <li><a onclick="showAdminPage('settings',this)">⚙️ Танзимот</a></li>
       </ul>
     </div>
@@ -92,7 +92,7 @@
         <div class="admin-table-wrap">
           <div class="admin-table-header">
             <h4>Рӯйхати объектҳо</h4>
-            <button class="btn-gold" style="font-size:0.76rem;padding:6px 13px;" onclick="showAdminPage('addProperty')">+ Иловакун</button>
+            <button class="btn-gold" style="font-size:0.76rem;padding:6px 13px;" onclick="showAdminPage('addProperty')">+ Илова кунед:</button>
           </div>
           <table><thead><tr><th>#</th><th>Медиа</th><th>Ном</th><th>Ноҳия</th><th>Намуд</th><th>Нарх</th><th>VIP</th><th>Дидан</th><th>Амал</th></tr></thead>
           <tbody id="propertiesTableBody"></tbody></table>
@@ -101,7 +101,7 @@
 
       <!-- ADD/EDIT PROPERTY -->
       <div class="admin-page" id="page-addProperty">
-        <div class="admin-page-title" id="addPropTitle">Хонаи нав иловакун</div>
+        <div class="admin-page-title" id="addPropTitle">Хонаи нав иловакунед:</div>
         <div class="add-form">
           <h4>Маълумоти асосӣ</h4>
           <input type="hidden" id="ap-editId" value=""/>
@@ -117,7 +117,7 @@
               <input type="number" id="ap-price" placeholder="350000" style="width:100%;box-sizing:border-box;"/>
             </div>
             <div class="form-row"><label>Намуди манзил</label>
-              <select id="ap-kind"><option>Квартира</option><option>Хонаи алоҳида</option><option>Коттедж</option><option>Офис</option><option>Студия</option></select>
+              <select id="ap-kind"><option>Квартира</option><option>Ҳавлӣ</option><option>Коттедж</option><option>Офис</option><option>Студия</option></select>
             </div>
             <div class="form-row"><label>Ошёна (масалан 3/9)</label><input type="text" id="ap-floor" placeholder="3/9"/></div>
             <div class="form-row"><label>Майдон (м²)</label><input type="number" id="ap-area" placeholder="75"/></div>
