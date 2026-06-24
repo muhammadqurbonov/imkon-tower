@@ -21,4 +21,6 @@ const CONTACT = {
 firebase.initializeApp(firebaseConfig);
 const db = firebase.firestore();
 const auth = firebase.auth();
-const storage = firebase.storage();
+// Storage — Cloudinary истифода мешавад, Firebase Storage лозим нест
+let storage = null;
+try { storage = firebase.storage(); } catch(e) { console.warn('Firebase Storage disabled:', e.message); }
