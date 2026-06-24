@@ -117,7 +117,7 @@
               <input type="number" id="ap-price" placeholder="350000" style="width:100%;box-sizing:border-box;"/>
             </div>
             <div class="form-row"><label>Намуди манзил</label>
-              <select id="ap-kind"><option>Квартира</option><option>Ҳавлӣ</option><option>Коттедж</option><option>Офис</option><option>Студия</option></select>
+              <select id="ap-kind"><option>Квартира</option><option>Ҳавлӣ</option><option>Котлаван</option><option>Офис</option><option>Студия</option></select>
             </div>
             <div class="form-row"><label>Ошёна (масалан 3/9)</label><input type="text" id="ap-floor" placeholder="3/9"/></div>
             <div class="form-row"><label>Майдон (м²)</label><input type="number" id="ap-area" placeholder="75"/></div>
@@ -232,8 +232,8 @@ function showAdminPage(page,link){
   if(link) link.classList.add('active');
   else {
     document.querySelectorAll('.admin-sidebar a').forEach(a=>{
-      if(a.textContent.includes('Хона иловакун') && page==='addProperty') a.classList.add('active');
-      if(a.textContent.includes('Хонаҳо') && page==='properties' && !a.textContent.includes('иловакун')) a.classList.add('active');
+      if(a.textContent.includes('Хона илова кунед') && page==='addProperty') a.classList.add('active');
+      if(a.textContent.includes('Хонаҳо') && page==='properties' && !a.textContent.includes('илова кунед:')) a.classList.add('active');
     });
   }
   if(page==='addProperty'){
@@ -320,8 +320,8 @@ function startEdit(id){
 function cancelEdit(){
   editingId=null;
   clearAddForm();
-  document.getElementById('addPropTitle').textContent='Хонаи нав иловакун';
-  document.getElementById('ap-submit-btn').textContent='✅ Илова кун ва нашр кун';
+  document.getElementById('addPropTitle').textContent='Хонаи нав илова кунед:';
+  document.getElementById('ap-submit-btn').textContent='✅ Илова ва нашр кунед:';
   document.getElementById('ap-cancel-btn').style.display='none';
   showAdminPage('properties');
 }
@@ -395,10 +395,10 @@ async function submitProperty(){
   const desc=v('ap-desc'), vip=document.getElementById('ap-vip').checked;
   const lat=_pickedLat, lng=_pickedLng;
 
-  if(!name||!district||!price){ showToast('Ном, ноҳия ва нархро ворид кун!'); return; }
+  if(!name||!district||!price){ showToast('Ном, ноҳия ва нархро ворид кунед!'); return; }
 
   const btn=document.getElementById('ap-submit-btn');
-  btn.disabled=true; btn.textContent='⏳ Бор шудан истодааст...';
+  btn.disabled=true; btn.textContent='⏳ Загрузка...';
 
   try{
     const media = await uploadPendingMedia();
@@ -415,7 +415,7 @@ async function submitProperty(){
       data.views = 0;
       data.createdAt = firebase.firestore.FieldValue.serverTimestamp();
       await db.collection('properties').add(data);
-      showToast('✅ Хонаи нав иловашуд ва нашр гардид!');
+      showToast('✅ Хонаи нав илова шуд ва нашр гардид!');
     }
 
     cancelEdit();
@@ -424,7 +424,7 @@ async function submitProperty(){
     showToast('Хатогӣ: '+err.message);
   } finally {
     btn.disabled=false;
-    btn.textContent = editingId ? '💾 Захира кардани тағйирот' : '✅ Илова кун ва нашр кун';
+    btn.textContent = editingId ? '💾 Захира кардани тағйирот' : '✅ Илова нашр кунед!';
   }
 }
 </script>
