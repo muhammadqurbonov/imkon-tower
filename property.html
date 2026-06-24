@@ -5,6 +5,13 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
 <title>Маълумоти хона — Imkon Tower</title>
 <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet"/>
+<link rel="manifest" href="manifest.json"/>
+<meta name="theme-color" content="#C9A84C"/>
+<meta name="apple-mobile-web-app-capable" content="yes"/>
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent"/>
+<meta name="apple-mobile-web-app-title" content="Imkon Tower"/>
+<link rel="apple-touch-icon" href="icons/icon-192.png"/>
+<link rel="icon" type="image/png" sizes="192x192" href="icons/icon-192.png"/>
 <link rel="stylesheet" href="style.css"/>
 </head>
 <body>
@@ -64,7 +71,6 @@
         <h1 class="detail-title" id="dTitle"></h1>
         <div class="detail-location" id="dLocation"></div>
         <div class="detail-price" id="dPrice"></div>
-        <div id="dPriceUsd" style="font-size:0.85rem;color:var(--text-dim);margin-top:-6px;margin-bottom:8px;"></div>
         <div class="detail-specs-grid" id="dSpecs"></div>
         <div class="detail-desc" id="dDesc"></div>
         <div class="detail-contact-btns">
@@ -124,7 +130,23 @@ function renderGallery(media){
   track.innerHTML = _galleryMedia.map(m=>`
     <div class="gallery-slide">
       ${m.type==='video'
-        ? `<video src="${m.url}" controls playsinline></video>`
+        ? `<video
+            src="${m.url}"
+            controls
+            playsinline
+            preload="metadata"
+            poster="${m.url.replace('/upload/', '/upload/so_0,f_jpg,q_auto,w_800/')}"
+            style="width:100%;height:100%;object-fit:cover;background:#000;"
+            oncanplay="this.closest('.gallery-slide').querySelector('.vid-play-overlay')&&(this.closest('.gallery-slide').querySelector('.vid-play-overlay').style.display='none')"
+           >
+            <source src="${m.url}" type="video/mp4"/>
+            <source src="${m.url.replace('.mp4','.webm')}" type="video/webm"/>
+           </video>
+           <div class="vid-play-overlay" onclick="this.previousElementSibling.play();this.style.display='none'" style="position:absolute;inset:0;display:flex;align-items:center;justify-content:center;cursor:pointer;background:rgba(0,0,0,0.3);">
+             <div style="width:64px;height:64px;background:rgba(255,255,255,0.95);border-radius:50%;display:flex;align-items:center;justify-content:center;box-shadow:0 4px 20px rgba(0,0,0,0.4);">
+               <svg width="24" height="24" viewBox="0 0 24 24" fill="#0A1628"><polygon points="8,5 19,12 8,19"/></svg>
+             </div>
+           </div>`
         : `<img src="${m.url}" alt=""/>`}
     </div>`).join('');
 
@@ -136,8 +158,13 @@ function renderGallery(media){
   document.querySelector('.gallery-arrow.next').style.display = showArrows?'flex':'none';
 
   document.getElementById('thumbsRow').innerHTML = _galleryMedia.map((m,i)=>`
-    <div class="thumb ${i===0?'active':''}" onclick="goToSlide(${i})">
-      ${m.type==='video' ? `<video src="${m.url}" muted></video>` : `<img src="${m.url}"/>`}
+    <div class="thumb ${i===0?'active':''}" onclick="goToSlide(${i})" style="position:relative;">
+      ${m.type==='video'
+        ? `<img src="${m.url.replace('/upload/', '/upload/so_0,f_jpg,q_auto,w_200/')}" alt="video" style="width:100%;height:100%;object-fit:cover;"/>
+           <div style="position:absolute;inset:0;display:flex;align-items:center;justify-content:center;background:rgba(0,0,0,0.3);">
+             <svg width="18" height="18" viewBox="0 0 24 24" fill="white"><polygon points="8,5 19,12 8,19"/></svg>
+           </div>`
+        : `<img src="${m.url}"/>`}
     </div>`).join('');
 
   track.addEventListener('scroll', ()=>{
@@ -174,9 +201,7 @@ function renderDetail(p){
 
   document.getElementById('dTitle').textContent = p.name;
   document.getElementById('dLocation').textContent = '📍 '+p.district+(p.address?', '+p.address:'');
-  const priceUsd = somToUsd(p.price||0);
   document.getElementById('dPrice').innerHTML = formatPrice(p.price,p.type)+`<small> ${p.type==='rent'?'дар моҳ':'нарх'}</small>`;
-  document.getElementById('dPriceUsd').textContent = `💱 ≈ ${fmt(priceUsd)} USD`;
 
   document.getElementById('dSpecs').innerHTML = `
     <div class="detail-spec-item"><small>Намуд</small><span>${p.kind||'—'}</span></div>
@@ -227,6 +252,7 @@ function showNotFound(){
 }
 
 listenProperties(()=>{ loadDetailPage(); });
+if("serviceWorker" in navigator){ navigator.serviceWorker.register("sw.js").catch(()=>{}); }
 </script>
 </body>
 </html>
