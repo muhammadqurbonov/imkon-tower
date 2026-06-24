@@ -99,7 +99,6 @@
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-storage-compat.js"></script>
 <script src="firebase-config.js"></script>
 <script src="map.js"></script>
 <script src="common.js"></script>
@@ -269,8 +268,12 @@ function showNotFound(){
   hidePageLoader();
 }
 
-// property.html-да listenProperties лозим нест — бевосита бор кун
-loadDetailPage();
+// property.html-да бевосита бор кун — DOMContentLoaded баъд
+if(document.readyState === 'loading'){
+  document.addEventListener('DOMContentLoaded', loadDetailPage);
+} else {
+  loadDetailPage();
+}
 if("serviceWorker" in navigator){ navigator.serviceWorker.register("sw.js").catch(()=>{}); }
 </script>
 </body>
