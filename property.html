@@ -4,6 +4,29 @@
 <meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
 <title>Маълумоти хона — Imkon Tower</title>
+<!-- ═══════════════════════════════════════════════════════════ -->
+<!-- SEO — property.html (динамик — JS тавассути renderDetail  -->
+<!-- ба таври худкор title/og:title/og:description иваз мешавад)-->
+<!-- ═══════════════════════════════════════════════════════════ -->
+<meta name="description" content="Маълумоти муфассал дар бораи хона — Imkon Tower Душанбе." id="metaDesc"/>
+<meta name="robots" content="index, follow"/>
+<link rel="canonical" href="https://imkontower.estate/property.html" id="canonicalTag"/>
+
+<!-- Open Graph (пешфарз; JS онро иваз мекунад) -->
+<meta property="og:type" content="product"/>
+<meta property="og:site_name" content="Imkon Tower"/>
+<meta property="og:title" content="Хона — Imkon Tower" id="ogTitle"/>
+<meta property="og:description" content="Маълумоти муфассал дар бораи хона дар Душанбе." id="ogDesc"/>
+<meta property="og:url" content="https://imkontower.estate/property.html" id="ogUrl"/>
+<meta property="og:image" content="https://imkontower.estate/icons/og-image.jpg" id="ogImage"/>
+<meta property="og:image:width" content="1200"/>
+<meta property="og:image:height" content="630"/>
+
+<!-- Twitter Card -->
+<meta name="twitter:card" content="summary_large_image"/>
+<meta name="twitter:title" content="Хона — Imkon Tower" id="twTitle"/>
+<meta name="twitter:description" content="Маълумоти муфассал дар бораи хона дар Душанбе." id="twDesc"/>
+<meta name="twitter:image" content="https://imkontower.estate/icons/og-image.jpg" id="twImage"/>
 <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet"/>
 <link rel="manifest" href="manifest.json"/>
 <meta name="theme-color" content="#C9A84C"/>
@@ -190,6 +213,49 @@ function galleryNext(){ goToSlide(Math.min(_galleryMedia.length-1,_galleryIdx+1)
 window.addEventListener('resize', ()=>{ if(_galleryMedia.length) goToSlide(_galleryIdx); });
 
 function renderDetail(p){
+  // ── Динамик SEO update ──
+  const pageTitle = p.name + ' — Imkon Tower';
+  const pageDesc  = `${p.name} | ${p.district}${p.address ? ', '+p.address : ''} | ${formatPrice(p.price, p.type)} | Imkon Tower Душанбе`;
+  const pageUrl   = `https://imkontower.estate/property.html?id=${p.id}`;
+  const pageImg   = (p.media && p.media[0]) ? p.media[0].url : 'https://imkontower.estate/icons/og-image.jpg';
+
+  document.title = pageTitle;
+  const set = (id, attr, val) => { const el=document.getElementById(id); if(el) el.setAttribute(attr, val); };
+  set('metaDesc',   'content', pageDesc);
+  set('canonicalTag','href',   pageUrl);
+  set('ogTitle',    'content', pageTitle);
+  set('ogDesc',     'content', pageDesc);
+  set('ogUrl',      'content', pageUrl);
+  set('ogImage',    'content', pageImg);
+  set('twTitle',    'content', pageTitle);
+  set('twDesc',     'content', pageDesc);
+  set('twImage',    'content', pageImg);
+
+  // JSON-LD барои ин объект
+  const existingLD = document.getElementById('propertyJsonLd');
+  if(existingLD) existingLD.remove();
+  const ld = document.createElement('script');
+  ld.type = 'application/ld+json';
+  ld.id   = 'propertyJsonLd';
+  ld.textContent = JSON.stringify({
+    "@context": "https://schema.org",
+    "@type": "Product",
+    "name": p.name,
+    "description": pageDesc,
+    "image": pageImg,
+    "url": pageUrl,
+    "brand": { "@type": "Brand", "name": "Imkon Tower" },
+    "offers": {
+      "@type": "Offer",
+      "price": p.price,
+      "priceCurrency": "TJS",
+      "availability": "https://schema.org/InStock",
+      "seller": { "@type": "Organization", "name": "Imkon Tower" }
+    }
+  });
+  document.head.appendChild(ld);
+  // ── /Динамик SEO ──
+
   document.title = p.name + ' — Imkon Tower';
   renderGallery(p.media);
 
