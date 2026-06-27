@@ -1,0 +1,11 @@
+# robots.txt — Imkon Tower
+# https://imkontower.estate/
+
+User-agent: *
+Allow: /
+
+# Admin саҳифаро индекс накун
+Disallow: /admin.html
+
+# Sitemap
+Sitemap: https://imkontower.estate/sitemap.xml
