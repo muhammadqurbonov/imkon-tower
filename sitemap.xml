@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
+        xmlns:xhtml="http://www.w3.org/1999/xhtml">
+
+  <!-- Саҳифаи асосӣ -->
+  <url>
+    <loc>https://imkontower.estate/</loc>
+    <lastmod>2025-01-01</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>1.0</priority>
+    <xhtml:link rel="alternate" hreflang="tg" href="https://imkontower.estate/"/>
+    <xhtml:link rel="alternate" hreflang="ru" href="https://imkontower.estate/"/>
+  </url>
+
+  <!-- Саҳифаи объект (динамик — Google аз index мефаҳмад) -->
+  <url>
+    <loc>https://imkontower.estate/property.html</loc>
+    <lastmod>2025-01-01</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>0.8</priority>
+  </url>
+
+</urlset>
