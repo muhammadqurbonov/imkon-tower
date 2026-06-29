@@ -10,15 +10,15 @@
 <!-- ═══════════════════════════════════════════════════════════ -->
 <meta name="description" content="Маълумоти муфассал дар бораи хона — Imkon Tower Душанбе." id="metaDesc"/>
 <meta name="robots" content="index, follow"/>
-<link rel="canonical" href="https://imkontower.estate/property.html" id="canonicalTag"/>
+<link rel="canonical" href="https://imkon.estate/property.html" id="canonicalTag"/>
 
 <!-- Open Graph (пешфарз; JS онро иваз мекунад) -->
 <meta property="og:type" content="product"/>
 <meta property="og:site_name" content="Imkon Tower"/>
 <meta property="og:title" content="Хона — Imkon Tower" id="ogTitle"/>
 <meta property="og:description" content="Маълумоти муфассал дар бораи хона дар Душанбе." id="ogDesc"/>
-<meta property="og:url" content="https://imkontower.estate/property.html" id="ogUrl"/>
-<meta property="og:image" content="https://imkontower.estate/icons/og-image.jpg" id="ogImage"/>
+<meta property="og:url" content="https://imkon.estate/property.html" id="ogUrl"/>
+<meta property="og:image" content="https://imkon.estate/icons/og-image.jpg" id="ogImage"/>
 <meta property="og:image:width" content="1200"/>
 <meta property="og:image:height" content="630"/>
 
@@ -26,7 +26,7 @@
 <meta name="twitter:card" content="summary_large_image"/>
 <meta name="twitter:title" content="Хона — Imkon Tower" id="twTitle"/>
 <meta name="twitter:description" content="Маълумоти муфассал дар бораи хона дар Душанбе." id="twDesc"/>
-<meta name="twitter:image" content="https://imkontower.estate/icons/og-image.jpg" id="twImage"/>
+<meta name="twitter:image" content="https://imkon.estate/icons/og-image.jpg" id="twImage"/>
 <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet"/>
 <link rel="manifest" href="manifest.json"/>
 <meta name="theme-color" content="#C9A84C"/>
@@ -216,8 +216,8 @@ function renderDetail(p){
   // ── Динамик SEO update ──
   const pageTitle = p.name + ' — Imkon Tower';
   const pageDesc  = `${p.name} | ${p.district}${p.address ? ', '+p.address : ''} | ${formatPrice(p.price, p.type)} | Imkon Tower Душанбе`;
-  const pageUrl   = `https://imkontower.estate/property.html?id=${p.id}`;
-  const pageImg   = (p.media && p.media[0]) ? p.media[0].url : 'https://imkontower.estate/icons/og-image.jpg';
+  const pageUrl   = `https://imkon.estate/property.html?id=${p.id}`;
+  const pageImg   = (p.media && p.media[0]) ? p.media[0].url : 'https://imkon.estate/icons/og-image.jpg';
 
   document.title = pageTitle;
   const set = (id, attr, val) => { const el=document.getElementById(id); if(el) el.setAttribute(attr, val); };
