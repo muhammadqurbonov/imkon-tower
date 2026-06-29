@@ -278,7 +278,7 @@ function renderDetail(p){
 
   document.getElementById('dDesc').textContent = p.desc || '';
 
-  const msg = encodeURIComponent(`Салом! Мехостам дар бораи объект маълумот гирам:\n🏠 ${p.name}\n📍 ${p.district}\n💰 ${formatPrice(p.price,p.type)}`);
+  const msg = encodeURIComponent(`Салом! Мехостам дар бораи ин маълумот гирам:\n🏠 ${p.name}\n📍 ${p.district}\n💰 ${formatPrice(p.price,p.type)}`);
   document.getElementById('dWA').href = `https://wa.me/${CONTACT.whatsapp}?text=${msg}`;
   document.getElementById('dTG').href = `https://t.me/${CONTACT.telegram}?text=${msg}`;
 
