@@ -28,9 +28,9 @@ function injectCommonWidgets(){
     p.innerHTML = `
       <button class="pwa-close" onclick="document.getElementById('pwaInstall').style.display='none'">×</button>
       <h4>📱 Ба телефон насб кун</h4>
-      <p>Imkon Tower-ро монанди App истифода кун — интернетсоз!</p>
+      <p>Imkon Tower-ро монанди App истифода баред!</p>
       <div class="pwa-btns">
-        <button class="btn-gold" style="font-size:0.8rem;padding:7px 14px;" id="pwaInstallBtn">Насб кун</button>
+        <button class="btn-gold" style="font-size:0.8rem;padding:7px 14px;" id="pwaInstallBtn">Насб кунед</button>
         <button class="btn-outline" style="font-size:0.8rem;padding:7px 12px;" onclick="document.getElementById('pwaInstall').style.display='none'">Баъд</button>
       </div>`;
     document.body.appendChild(p);
