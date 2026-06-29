@@ -14,7 +14,7 @@ const firebaseConfig = {
 // Рақамҳои тамос
 const CONTACT = {
   whatsapp: '992937988000',
-  telegram: '992881180770'
+  telegram: '992173303000'
 };
 
 // ── Firebase init (compat SDK) ──
