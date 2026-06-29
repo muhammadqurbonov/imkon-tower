@@ -23,7 +23,7 @@ function parsePriceToSom(val){
 }
 function v(id){ const e=document.getElementById(id); return e? e.value.trim() : ''; }
 function emojiFor(kind){
-  const map={'Квартира':'🏢','Хонаи ҳавлигӣ':'🏠','Котедж':'🏡','Офис':'🏬','Студия':'🏢'};
+  const map={'Квартира':'🏢','Ҳавлӣ, Дача':'🏠','Котлаван':'🏡','Офис':'🏬','Студия':'🏢'};
   return map[kind]||'🏠';
 }
 
