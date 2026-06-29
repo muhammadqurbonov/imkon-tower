@@ -4,17 +4,17 @@
 
   <!-- Саҳифаи асосӣ -->
   <url>
-    <loc>https://imkontower.estate/</loc>
+    <loc>https://imkon.estate/</loc>
     <lastmod>2025-01-01</lastmod>
     <changefreq>daily</changefreq>
     <priority>1.0</priority>
-    <xhtml:link rel="alternate" hreflang="tg" href="https://imkontower.estate/"/>
-    <xhtml:link rel="alternate" hreflang="ru" href="https://imkontower.estate/"/>
+    <xhtml:link rel="alternate" hreflang="tg" href="https://imkon.estate/"/>
+    <xhtml:link rel="alternate" hreflang="ru" href="https://imkon.estate/"/>
   </url>
 
   <!-- Саҳифаи объект (динамик — Google аз index мефаҳмад) -->
   <url>
-    <loc>https://imkontower.estate/property.html</loc>
+    <loc>https://imkon.estate/property.html</loc>
     <lastmod>2025-01-01</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.8</priority>
