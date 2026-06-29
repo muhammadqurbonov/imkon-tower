@@ -1,0 +1,50 @@
+{
+  "name": "Imkon Tower — Хонаҳо дар Душанбе",
+  "short_name": "Imkon Tower",
+  "description": "Хариду фурӯш ва иҷораи хонаҳо дар Душанбе",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#0A1628",
+  "theme_color": "#C9A84C",
+  "orientation": "portrait-primary",
+  "lang": "tg",
+  "icons": [
+    {
+      "src": "icons/icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "icons/icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ],
+  "screenshots": [
+    {
+      "src": "icons/og-image.jpg",
+      "sizes": "1200x630",
+      "type": "image/jpeg"
+    }
+  ],
+  "categories": ["lifestyle", "business"],
+  "shortcuts": [
+    {
+      "name": "Хонаҳои фурӯшӣ",
+      "url": "/?type=sell",
+      "description": "Хонаҳои фурӯшӣ дар Душанбе"
+    },
+    {
+      "name": "Хонаҳои иҷоравӣ",
+      "url": "/?type=rent",
+      "description": "Хонаҳои иҷоравӣ дар Душанбе"
+    },
+    {
+      "name": "Ипотека",
+      "url": "/#mortgage",
+      "description": "Ҳисоби ипотека"
+    }
+  ]
+}
