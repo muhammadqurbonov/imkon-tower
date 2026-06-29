@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-<title>Панели Админ — Imkon Tower</title>
+<title> Админ Панел - Imkon Tower</title>
 <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet"/>
 <link rel="manifest" href="manifest.json"/>
 <meta name="theme-color" content="#C9A84C"/>
@@ -117,7 +117,7 @@
               <input type="number" id="ap-price" placeholder="350000" style="width:100%;box-sizing:border-box;"/>
             </div>
             <div class="form-row"><label>Намуди манзил</label>
-              <select id="ap-kind"><option>Квартира</option><option>Ҳавлӣ</option><option>Котлаван</option><option>Офис</option><option>Студия</option></select>
+              <select id="ap-kind"><option>Квартира</option><option>Ҳавлӣ, Дача</option><option>Котлаван</option><option>Офис</option><option>Студия</option></select>
             </div>
             <div class="form-row"><label>Ошёна (масалан 3/9)</label><input type="text" id="ap-floor" placeholder="3/9"/></div>
             <div class="form-row"><label>Майдон (м²)</label><input type="number" id="ap-area" placeholder="75"/></div>
@@ -147,13 +147,13 @@
               <input type="file" id="ap-media" accept="image/*,video/*" multiple onchange="handleMediaUpload(this)"/>
               <div class="upload-icon">📷</div>
               <p>Сурат ё видеоро ин ҷо кашида биёр ё клик кун</p>
-              <small>JPG, PNG, MP4, MOV — якчанд файл (Cloudinary-га бор мешаванд)</small>
+              <small>JPG, PNG, MP4, MOV — якчанд файл</small>
             </div>
             <div class="media-preview-grid" id="mediaPreviewGrid"></div>
           </div>
 
           <div style="display:flex;gap:10px;margin-top:16px;">
-            <button class="form-btn" style="max-width:260px;" id="ap-submit-btn" onclick="submitProperty()">✅ Илова кун ва нашр кун</button>
+            <button class="form-btn" style="max-width:260px;" id="ap-submit-btn" onclick="submitProperty()">✅ Илова ва нашр кунед</button>
             <button class="btn-outline" id="ap-cancel-btn" style="display:none;" onclick="cancelEdit()">Бекор кун</button>
           </div>
         </div>
@@ -424,7 +424,7 @@ async function submitProperty(){
     showToast('Хатогӣ: '+err.message);
   } finally {
     btn.disabled=false;
-    btn.textContent = editingId ? '💾 Захира кардани тағйирот' : '✅ Илова нашр кунед!';
+    btn.textContent = editingId ? '💾 Захира кардани тағйирот' : '✅ Илова кунед!';
   }
 }
 </script>
