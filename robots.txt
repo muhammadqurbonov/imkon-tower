@@ -1,5 +1,5 @@
 # robots.txt — Imkon Tower
-# https://imkontower.estate/
+# https://imkon.estate/
 
 User-agent: *
 Allow: /
@@ -8,4 +8,4 @@ Allow: /
 Disallow: /admin.html
 
 # Sitemap
-Sitemap: https://imkontower.estate/sitemap.xml
+Sitemap: https://imkon.estate/sitemap.xml
